@@ -1,0 +1,21 @@
+#include "util.h"
+#include "lin_equations.h"
+#include "omp_jacobi.h"
+
+
+#ifndef MAX_ITERATIONS
+#define MAX_ITERATIONS 10000
+#endif
+
+#include <iostream>
+
+unsigned long solve(VALUE **A, VALUE *b, VALUE *y, VALUE *x, long N){
+  unsigned long start = time_ms(), end;
+  
+  omp_jacobi(A, b, x, EPSILON, MAX_ITERATIONS, N);
+  
+  
+  end = time_ms();
+  
+  return end-start;
+}
