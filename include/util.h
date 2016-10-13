@@ -8,7 +8,7 @@
 #define FACTOR_WORK 2
 #endif
 
-#define MAX_ARGS 8
+#define MAX_ARGS 9
 
 extern int num_threads;
 
@@ -18,6 +18,9 @@ template <>
 double get_rand<double>(double lower, double upper);
 template <>
 float get_rand<float>(float lower, float upper);
+
+template <typename T>
+T get_Average(T *exec_times, long sample_size);
 
 
 long* handle_Input(int argc, char* argv[]);

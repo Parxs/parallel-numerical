@@ -39,6 +39,17 @@ T get_rand(T lower, T upper){
   return rand_num+lower;  
 }
 
+template <typename T>
+T get_Average(T *exec_times, long sample_size){
+  T avg_time = 0;
+  
+  for(long i=0; i<sample_size; i++){
+    avg_time += exec_times[i]/sample_size;
+  }
+  
+  return avg_time;
+}
+
 
 #endif //UTIL_HXX
 

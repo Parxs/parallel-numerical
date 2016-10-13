@@ -50,7 +50,7 @@ bool check_Solution(T **A, T *b, T *x, T epsilon, long N){
     
     if(fabs(res-b[i]) > epsilon){
 #ifdef DEBUG
-      cout << scientific;
+      cout << scientific << showpos;
       cout << "> Expected:\t" << b[i] << "\n";
       cout << "> Got:\t\t" << res << "\n";
       cout << "> Diff:\t\t" << fabs(res-b[i]) << "\n\n";

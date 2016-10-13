@@ -107,6 +107,7 @@ long* handle_Input(int argc, char* argv[]){
       cout << "-R<seed>                   \t... use the given num as random seed\n";
       cout << "-F<num>                    \t... (if applicable) searches for the given number\n";
       cout << "-X<num>                    \t... (if applicable) uses this number for X\n";
+      cout << "-I<num>                    \t... from how many executions the average should be taken\n";
       
       cout << endl;
       exit(0);
@@ -145,6 +146,10 @@ long* handle_Input(int argc, char* argv[]){
     }
     case 'X':{
       index = 7;
+      break;
+    }
+    case 'I':{
+      index = 8;
       break;
     }
     default :
