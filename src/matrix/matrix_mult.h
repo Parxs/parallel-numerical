@@ -5,6 +5,9 @@
 #define VALUE double
 #endif
 
+#ifndef EPSILON
+#define EPSILON 1e-10
+#endif
 
 /* matrix multiplication */
 unsigned long multiply_matrix2D(VALUE** A, VALUE** B, VALUE** C, long M, long N, long K);

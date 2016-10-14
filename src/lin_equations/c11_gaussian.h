@@ -1,18 +1,43 @@
 #ifndef C11_GAUSSIAN_HXX
 #define C11_GAUSSIAN_HXX
 
-
-// needed for std::function as otherwise
-// error: ‘function’ is not a member of ‘std’
 #include <future>
-
-
 #include <iostream>
+#include <thread>
+#include <vector>
 
 #include "util.h"
 
-void _execute(std::function<bool (long, long, long)> func, long start, int num_tasks, long num_elems);
-
+void _execute(std::function<bool (long, long, long)> func, long start, int num_workers, long num_elems){
+  using namespace std;
+  vector<future<bool>> futures;
+  int t, extra; // extra will at most be as big as num_workers-1
+  long chunksize, start_task, end_task;
+  
+  // split work
+  chunksize = num_elems / num_workers;
+	extra = num_elems % num_workers; 
+	start_task = start;
+	end_task = start+chunksize;
+  
+  // run threads
+  for(t=0; t<num_workers; t++){
+    // test whether extra work still needs to be done
+    if(t < extra){
+      end_task++;
+    }
+    
+    // start-1 to tell the function which index the current pivot has
+    futures.push_back(async(launch::async, func, start-1, start_task, end_task)); 
+    
+    start_task = end_task;
+    end_task = start_task + chunksize;
+  }
+  
+  for(future<bool> &f: futures){
+    f.get();
+  }
+}
 
 template <typename T>
 void c11_Gaussian(T** A, T* b, T* y, long N){

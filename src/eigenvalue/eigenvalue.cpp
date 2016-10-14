@@ -48,21 +48,18 @@ int main(int argc, char* argv[]){
   }
   cout << 	"=================================================\n\n";
 
-  long i;
-  for(i=0; i<repeats; i++){
-    VALUE **A, **V;
-    VALUE *d;
-    
-    // Allocation
-    A = new VALUE*[N];
-    V = new VALUE*[N];
-    allocate_2D(A, N);
-    allocate_2D(V, N);
-    
-    
-    d = new VALUE[N];
-    
-
+  VALUE **A, **V;
+  VALUE *d;
+  
+ // Allocation
+  A = new VALUE*[N];
+  V = new VALUE*[N];
+  allocate_2D(A, N);
+  allocate_2D(V, N);
+  
+  d = new VALUE[N];
+  
+  for(long i=0; i<repeats; i++){
     // Initialization
     init_Symmetric(A, N, (VALUE)MIN, (VALUE)MAX);
     
@@ -70,27 +67,22 @@ int main(int argc, char* argv[]){
     exec_times[i] = calculate_Eigen(A, d, V, N);
     
 #ifdef DEBUG
-    cout << "> Execution-Count: " << i+1 << "\n";
-    cout << "> time taken: " << exec_times[i] << "\n\n"; 
-  
     reconstruct_Symmetric(A, N);
     
-    cout << std::boolalpha;
     bool res = check_Eigenvalues(A, d, V, N);
-    cout << "> Check whether A*x = lambda*x: " << res << "\n\n";
+    if(!res){
+      cout << "> ERROR: trying A*x = lambda*x leads to wrong result\n\n";
+    }
 #endif
-
-    // Finalization
-    delete_2D(A, N);
-    delete_2D(V, N);
-
-    delete[] d;
-    
   }
-
+  
   cout << "avg. Time: \t" << get_Average(exec_times, repeats) << " ms\n\n";
   
-  
+  // Finalization
+  delete_2D(A, N);
+  delete_2D(V, N);
+
+  delete[] d;
   delete[] exec_times;
 
   return EXIT_SUCCESS;

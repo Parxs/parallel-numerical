@@ -32,5 +32,5 @@ add_subdirectory(src/search)
 add_subdirectory(src/lin_equations)
 add_subdirectory(src/eigenvalue)
 
-#add_subdirectory(src/polation)
+add_subdirectory(src/polation)
 #can't really be used for benchmarking as too fast/not enough things to parallelize

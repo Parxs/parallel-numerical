@@ -38,41 +38,19 @@ boost::optional<long> binarysearch(T* list, long N, T target){
 
 
 
-long search(int* list, long N, int find){
+long search(int* list, long N, int find, long *index){
   long start_time, exec_time;
-  boost::optional<long> index;
+  boost::optional<long> pos;
   
   start_time = time_ms();
-  index =  binarysearch(list, N, find);
+  pos =  binarysearch(list, N, find);
   exec_time = time_ms()-start_time;
   
-  if(!index){
-    cout << "Element was not found\n" << endl;
-#ifdef DEBUG
-  long i;
-  bool found = false;
-  for(i=0; i<N; i++){
-    if(list[i]==find){
-      found = true; 
-      break;
-    }
-  }
-  if(found){
-    cout << "> ERROR: list holds element!\n" << endl;
-  }else{
-    cout << "> list does not hold element!\n" << endl;
-  }
-
-#endif
-    
+  if(!pos){
+    *index = -1;
     return exec_time;
+  }else{
+    *index = *pos;
   }
-  
-#ifdef DEBUG
-  cout << "> Element found at index: " << *index << '\n' << endl;
-  if((list[*index]!=find)){
-    cout << "> ERROR: the found element was not the same as the element searched for\n" << endl;
-  }
-#endif
   return exec_time;
 }

@@ -10,6 +10,9 @@
 #ifndef MAX
 #define MAX 10.0
 #endif
+#ifndef EPSILON
+#define EPSILON 1e-2
+#endif
 
 
 #include "util.h"

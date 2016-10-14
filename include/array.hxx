@@ -177,6 +177,11 @@ bool compare_2D(T **A, T **B, T eps, long M, long N){
   for(i=0; i<M; i++){
     for(j=0; j<N; j++){
       if(fabs(A[i][j]-B[i][j]) > eps){
+#ifdef DEBUG
+        log_Difference(std::cout,A[i][j], B[i][j]);
+         
+#endif
+        
         return false;
       }
     }   

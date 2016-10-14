@@ -13,7 +13,7 @@ using namespace std;
 unsigned int num_workers;
 
 template <typename T>
-boost::optional<long> binarysearch(T* list, long start, long end, T target){
+boost::optional<long> binary(T* list, long start, long end, T target){
   boost::optional<long> index;
   long mid = end/2;
   while(start<=end){
@@ -36,24 +36,31 @@ boost::optional<long> binarysearch(T* list, long start, long end, T target){
 }
 
 template <typename T>
+boost::optional<long> binarysearch(T* list, long start, long end, T target){
+  return binary(list, start, end-1, target);
+}
+
+template <typename T>
 boost::optional<long> binarysearch(T* list, long N, T target){
   unsigned int t;
   long start, end, chunk_size, extra;
   vector<future<boost::optional<long>>> futures;
   
-  start = 0;
-  // N-1 because function assumes that list[end] is valid
-  chunk_size = (N-1)/num_workers;
-  extra = (N-1)%num_workers;
-  end = chunk_size;
+  chunk_size = N/num_workers;
+  extra = N%num_workers;
   
-  
-  
-  
-  for(t=0; t<=num_workers; t++){
+  for(t=0; t<num_workers; t++){
+    start = chunk_size*t;
     if(t<extra){
-      end++;
+      // offset by the extra work already done which is conveniently the
+      // id of the current thread
+      start += t;
+    }else{
+      // offset by extra because this work is done by the threads before
+      start += extra;
     }
+    end = start+chunk_size;
+    
     // using lambda to call binarysearch as otherwise wouldn't know 
     // which instantiation to use of the template
     auto code = [&list, start, end, target]{
@@ -61,12 +68,6 @@ boost::optional<long> binarysearch(T* list, long N, T target){
     };
     
     futures.push_back(async(launch::async, code));
-    
-    // +1 because the function does not want the size of the array but 
-    // instead the last index which should be accessed!
-    // so the next task must start one step higher
-    start = end+1;
-    end += 1+chunk_size;
   }
   
   
@@ -89,44 +90,22 @@ boost::optional<long> binarysearch(T* list, long N, T target){
 }
 
 
-long search(int* list, long N, int find){
+long search(int* list, long N, int find, long *index){
   num_workers = get_num_threads(N);
   
   long start_time, exec_time;
-  boost::optional<long> index;
+  boost::optional<long> pos;
   
   start_time = time_ms();
-  index =  binarysearch(list, N, find);
+  pos =  binarysearch(list, N, find);
   exec_time = time_ms()-start_time;
   
-  if(!index){
-    cout << "Element was not found\n" << endl;
-#ifdef DEBUG
-  long i;
-  bool found = false;
-  for(i=0; i<N; i++){
-    if(list[i]==find){
-      found = true; 
-      break;
-    }
-  }
-  if(found){
-    cout << "> ERROR: list holds element!\n" << endl;
-  }else{
-    cout << "> list does not hold element!\n" << endl;
-  }
-
-#endif
-    
+  if(!pos){
+    *index = -1;
     return exec_time;
+  }else{
+    *index = *pos;
   }
-  
-#ifdef DEBUG
-  cout << "> Element found at index: " << *index << '\n' << endl;
-  if((list[*index]!=find)){
-    cout << "> ERROR: the found element was not the same as the element searched for\n" << endl;
-  }
-#endif
   return exec_time;
 }
 

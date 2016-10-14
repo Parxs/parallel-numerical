@@ -82,11 +82,11 @@ int main(int argc, char* argv[]){
     exec_times[i] = solve(A, b, y, x, N);
     
 #ifdef DEBUG
-    cout << "> Execution-Count: " << i+1 << "\n";
-    cout << "> time taken: " << exec_times[i] << "\n\n"; 
 
-    cout << boolalpha;
-    cout << "> Gotten x holds (correct) solutions: " << check_Solution(A_test, b_test, x, EPSILON, N) << "\n\n";
+    bool res = check_Solution(A_test, b_test, x, EPSILON, N);
+    if(!res){
+      cout << "> ERROR: the gotten x is not a valid solution!\n\n";
+    }
 
     delete_2D(A_test, N);
     

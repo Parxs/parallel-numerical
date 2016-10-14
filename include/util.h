@@ -20,7 +20,12 @@ template <>
 float get_rand<float>(float lower, float upper);
 
 template <typename T>
-T get_Average(T *exec_times, long sample_size);
+T get_Average(T *list, long sample_size);
+
+
+template <typename T>
+void log_Difference(std::ostream& os, T expected, T gotten);
+
 
 
 long* handle_Input(int argc, char* argv[]);

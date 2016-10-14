@@ -10,21 +10,21 @@
 #include <algorithm>
 #include <cmath>
 
-bool _execute(std::function<bool (long, long)> func, long start, int num_tasks, long num_elems){
+bool _execute(std::function<bool (long, long)> func, long start, int num_workers, long num_elems){
   using namespace std;
   
   vector<future<bool>> futures;
-  int t, extra; // extra will at most be as big as num_tasks-1
+  int t, extra; // extra will at most be as big as num_workers-1
   long chunksize, start_task, end_task;
   
   // split work
-  chunksize = num_elems / num_tasks;
-	extra = num_elems % num_tasks; 
+  chunksize = num_elems / num_workers;
+	extra = num_elems % num_workers; 
 	start_task = start;
 	end_task = start+chunksize;
   
   // run threads
-  for(t=0; t<num_tasks; t++){
+  for(t=0; t<num_workers; t++){
     // test whether extra work still needs to be done
     if(t < extra){
       end_task++;

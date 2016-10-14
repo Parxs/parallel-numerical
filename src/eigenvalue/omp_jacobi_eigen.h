@@ -40,7 +40,7 @@ template <typename T>
 void copy_Diagonals_to_1D(T *d, T **A, long N){
   long i;
   
-  #pragma omp parallel shared(A,d) private(i)
+  #pragma omp parallel for shared(A,d) private(i)
   for(i=0; i<N; i++){
     d[i] = A[i][i];
   }

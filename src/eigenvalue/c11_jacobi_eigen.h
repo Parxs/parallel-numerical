@@ -45,27 +45,27 @@ struct Pair _init_Pair(long k, long l){
 /*====================================================================*/
 // Execute-Functions
 
-void _execute(std::function<bool (long, long)> func, long start, int num_tasks, long num_elems){
+void _execute(std::function<bool (long, long)> func, long start, int num_workers, long num_elems){
   using namespace std;
   
   vector<future<bool>> futures;
-  int t, extra; // extra will at most be as big as num_tasks-1
+  int t, extra; // extra will at most be as big as num_workers-1
   long chunksize, start_task, end_task;
   
   // do sequentially if N is small
-  if(num_tasks < THRESHOLD){
+  if(num_workers < THRESHOLD){
     func(start, start+num_elems);
     return;
   }
   
   // split work
-  chunksize = num_elems / num_tasks;
-	extra = num_elems % num_tasks; 
+  chunksize = num_elems / num_workers;
+	extra = num_elems % num_workers; 
 	start_task = start;
 	end_task = start+chunksize;
   
   // run threads
-  for(t=0; t<num_tasks; t++){
+  for(t=0; t<num_workers; t++){
     // test whether extra work still needs to be done
     if(t < extra){
       end_task++;
@@ -144,17 +144,17 @@ T get_Max_Off_Diagonal(T **A, long *k, long *l, long N){
   struct Container<T> max = _init_Container((T)0.0, 0, 1);
   
   
-  int t, extra; // extra will at most be as big as num_tasks-1
-  long chunksize, start, end, start_task, end_task, num_tasks, num_elems;
+  int t, extra; // extra will at most be as big as num_workers-1
+  long chunksize, start, end, start_task, end_task, num_workers, num_elems;
   start = 0;
   // N-1 because the last row has no off-diagonal elem to the right of 
   // the diagonal elem
   end = N-1;
   num_elems = end-start;
-  num_tasks = get_num_threads(num_elems);
+  num_workers = get_num_threads(num_elems);
   
   // do sequentially if N is small
-  if(num_tasks < THRESHOLD){
+  if(num_workers < THRESHOLD){
     max = code(start, end);
     *k = max.k;
     *l = max.l;
@@ -162,13 +162,13 @@ T get_Max_Off_Diagonal(T **A, long *k, long *l, long N){
   }
   
   // split work
-  chunksize = num_elems / num_tasks;
-	extra = num_elems % num_tasks; 
+  chunksize = num_elems / num_workers;
+	extra = num_elems % num_workers; 
 	start_task = start;
 	end_task = start+chunksize;
   
   // run threads
-  for(t=0; t<num_tasks; t++){
+  for(t=0; t<num_workers; t++){
     // test whether extra work still needs to be done
     if(t < extra){
       end_task++;

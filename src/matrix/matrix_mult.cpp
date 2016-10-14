@@ -22,18 +22,19 @@ using namespace std;
 #define SIZE 1024
 #endif
 #ifndef MIN
-#define MIN -10000.0
+#define MIN -100.0
 #endif
 #ifndef MAX
-#define MAX 10000.0
+#define MAX 100.0
 #endif
 #ifndef REPEATS
 #define REPEATS 1
 #endif
 
+
 int main(int argc, char* argv[]){
   // time measuring
-  unsigned long *exec_times_2D, *exec_times_opt_2D, *exec_times_1D, *exec_times_opt_1D;
+  unsigned long *exec_times_2D,  *exec_times_1D;
   
   long* args = handle_Input(argc, argv);
   
@@ -44,10 +45,11 @@ int main(int argc, char* argv[]){
   seed = args[5] == 0 ? time(NULL) : args[5];
   repeats = args[8] == 0 ? REPEATS : args[8];
 
-  exec_times_2D = new unsigned long[repeats];
-  exec_times_1D = new unsigned long[repeats];
-  exec_times_opt_2D = new unsigned long[repeats];
-  exec_times_opt_1D = new unsigned long[repeats];
+  // use second part of array for optimized times
+  exec_times_2D = new unsigned long[repeats*2];
+  exec_times_1D = new unsigned long[repeats*2];
+  //exec_times_opt_2D = new unsigned long[repeats];
+  //exec_times_opt_1D = new unsigned long[repeats];
 
   srand(seed);
   delete[] args;
@@ -92,16 +94,12 @@ int main(int argc, char* argv[]){
     exec_times_2D[i] = multiply_matrix2D(A_2d, B_2d, C1_2d, M, N, K);
     
    
-    exec_times_opt_2D[i] = multiply_matrix2D_optimized(A_2d, B_2d, C1_2d, M, N, K);
+    exec_times_2D[i+repeats] = multiply_matrix2D_optimized(A_2d, B_2d, C2_2d, M, N, K);
+    
     
 #ifdef DEBUG
-    cout << "> Execution-Count: " << i+1 << "\n";
-    cout << "> time taken: \n";
-    cout << "Naive: " << exec_times_2D[i] << "\n";
-    cout << "Optimized:\n " << exec_times_opt_2D[i] + "\n\n"; 
-
-    if(!compare_2D(C1_2d, C2_2d, M, K)){
-      //cout << "> ERROR: Different results for 2D matrix multiplications\n";
+    if(!compare_2D(C1_2d, C2_2d, EPSILON, M, K)){
+      cout << "> ERROR: Different results for 2D matrix multiplications\n";
     }
 #endif
 
@@ -127,14 +125,13 @@ int main(int argc, char* argv[]){
     exec_times_1D[i] = multiply_matrix1D(A_1d, B_1d, C1_1d, M, N, K);
     
     
-    exec_times_opt_1D[i] = multiply_matrix1D_optimized(A_1d, B_1d, C2_1d, M, N, K);
+    exec_times_1D[i+repeats] = multiply_matrix1D_optimized(A_1d, B_1d, C2_1d, M, N, K);
+    
+    
+    
     
 #ifdef DEBUG
-    cout << "> time taken: \n";
-    cout << "Naive: " << exec_times_1D[i] << "\n";
-    cout << "Optimized: " << exec_times_opt_1D[i] + "\n\n"; 
-
-    if(!compare_1D(C1_1d, C2_1d, M*K)){
+    if(!compare_1D(C1_1d, C2_1d, EPSILON, M*K)){
       cout << "> ERROR: Different results for 1D matrix multiplications\n";
     }
 #endif
@@ -151,15 +148,13 @@ int main(int argc, char* argv[]){
   
   // for getting the optimized average time an offset of repeats is needed
   cout << "avg. Time (Naive, 2D):    \t" << get_Average(exec_times_2D, repeats) << " ms\n";
-  cout << "avg. Time (Optimized, 2D):\t" << get_Average(exec_times_opt_2D, repeats) << " ms\n";
+  cout << "avg. Time (Optimized, 2D):\t" << get_Average(exec_times_2D+repeats, repeats) << " ms\n";
   cout << "avg. Time (Naive, 1D):    \t" << get_Average(exec_times_1D, repeats) << " ms\n";
-  cout << "avg. Time:(Optimized, 1D):\t" << get_Average(exec_times_opt_1D, repeats) << " ms\n\n";
+  cout << "avg. Time:(Optimized, 1D):\t" << get_Average(exec_times_1D+repeats, repeats) << " ms\n\n";
   
   
   delete[] exec_times_2D;
   delete[] exec_times_1D;
-  delete[] exec_times_opt_2D;
-  delete[] exec_times_opt_1D;
 
 
   return EXIT_SUCCESS;
