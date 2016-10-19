@@ -118,7 +118,7 @@ int main(int argc, char* argv[]){
     // Initialization 1D
     copy_2D_to_1D(A_2d, A_1d, M, N);
     delete_2D(A_2d, M);
-    copy_2D_to_1D(B_2d, B_1d, M, N);
+    copy_2D_to_1D(B_2d, B_1d, N, M);
     delete_2D(B_2d, N);
     
     // Execution 1D
