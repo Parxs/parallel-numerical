@@ -17,8 +17,8 @@ using namespace std;
 #ifndef MAX_POLYNOMIAL
 #define MAX_POLYNOMIAL -10.0
 #endif
-#ifndef REPEATS
-#define REPEATS 1
+#ifndef ITERATIONS
+#define ITERATIONS 1
 #endif
 
 
@@ -26,27 +26,35 @@ int main(int argc, char* argv[]){
   // time measuring
   unsigned long *exec_times;
   
-  long* args = handle_Input(argc, argv);
+  /*long* args = handle_Input(argc, argv);
   
   VALUE x;
-  long N, degree, seed, repeats;
+  long N, degree, seed, iterations;
   N = args[1] == 0 ? SIZE : args[1];
   degree = args[0] == 0 ? N-1 : args[0];
   
   seed = args[5] == 0 ? time(NULL) : args[5];
   srand(seed);
   
-  repeats = args[8] == 0 ? REPEATS : args[8];
-
-  exec_times = new unsigned long[repeats];
+  iterations = args[8] == 0 ? REPEATS : args[8];*/
   
-  // TODO better input handling
-  // the cast here is necessary but rather stupid because it should be
-  // possible to give floating point numbers as argument
-  x = args[7] == 0 ? get_rand(MIN, MAX) : (VALUE) args[7];
-
+  Input_Container cont = get_Arguments(argc, argv);
+  if(cont.help_needed){
+    print_help(argv[0]);
+    exit(0);
+  }
+  long N, seed, iterations, degree;
+  seed = (cont.seed) ? (*cont.seed) : (time(NULL));
+  srand(seed);
+  iterations = (cont.iterations) ? (*cont.iterations) : ITERATIONS;
   
-  delete[] args;
+  N = (cont.N) ? (*cont.N) : (SIZE);
+  degree = (cont.M) ? (*cont.M) : (N-1);
+  //TODO:  possibly allow floating point numbers
+  //but not that urgent because polation will probably not be used
+  VALUE x = (cont.X) ? ((VALUE) *cont.X) : get_rand(MIN, MAX);
+  
+  exec_times = new unsigned long[iterations];
   
   
   cout << "\n=================================================\n";
@@ -73,7 +81,7 @@ int main(int argc, char* argv[]){
   
   VALUE y;
 
-  for(long i=0; i<repeats; i++){
+  for(long i=0; i<iterations; i++){
     
     init_1D(polynomial, degree+1, MIN_POLYNOMIAL, MAX_POLYNOMIAL);
     init_Polynomial(x_values, y_values, N, polynomial, degree);
@@ -101,7 +109,7 @@ int main(int argc, char* argv[]){
 #endif
   }
   
-  cout << "avg. Time: \t" << get_Average(exec_times, repeats) << " ms\n\n";
+  cout << "avg. Time: \t" << get_Average(exec_times, iterations) << " ms\n\n";
   
   delete[] x_values;
   delete[] y_values;

@@ -27,9 +27,9 @@ unsigned long calculate_Eigen(VALUE **A, VALUE *d, VALUE **V, long N){
   end = time_ms()-start;
   
   if(iterations == -1){
-    std::cout << "> ERROR: did not converge even after " << max_iterations <<" iterations!\n\n";
+    std::cout << "> ERROR: did not converge even after " << max_iterations <<" iterations!\n";
   }else{
-    std::cout << "> Iterations: " << iterations << "\n\n";
+    std::cout << "> Iterations: " << iterations << "\n";
   }
   
   return end;

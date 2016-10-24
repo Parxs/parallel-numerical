@@ -51,9 +51,11 @@ bool is_sorted(T* list, long N);
 
 // Printing
 template <typename T>
-void print_list_2D(T** list, long N);
+void print_List(T **list, long N, long M);
 template <typename T>
-void print_list_1D(T* list, long N);
+void print_List(T **list, long N);
+template <typename T>
+void print_List(T *list, long N);
 
 // Swapping
 template <typename T>

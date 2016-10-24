@@ -8,6 +8,7 @@
 
 #include <iostream>
 #include <cstdlib>
+#include <boost/optional.hpp>
 
 #include "util.h"
 #include "array.h"
@@ -24,8 +25,8 @@ using namespace std;
 #ifndef MAX
 #define MAX 100.0
 #endif
-#ifndef REPEATS
-#define REPEATS 1
+#ifndef ITERATIONS
+#define ITERATIONS 1
 #endif
 #ifndef EPSILON
 #define EPSILON 1e-10
@@ -35,27 +36,28 @@ int main(int argc, char* argv[]){
   // time measuring
   unsigned long *exec_times_2D,  *exec_times_1D;
   
-  long* args = handle_Input(argc, argv);
+  Input_Container cont = get_Arguments(argc, argv);
+  if(cont.help_needed){
+    print_help(argv[0]);
+    exit(0);
+  }
+  long M, N, K, seed, iterations;
+  seed = (cont.seed) ? (*cont.seed) : (time(NULL));
+  srand(seed);
+  iterations = (cont.iterations) ? (*cont.iterations) : ITERATIONS;
   
-  long M, N, K, seed, repeats;
-  if(args[1] != 0 && args[0] == 0 && args[2] == 0){
-    N = args[1];
+  N = (cont.N) ? (*cont.N) : (SIZE);
+  if(cont.N && !cont.M && !cont.K){
     M = N;
     K = N;
   }else{
-    M = args[0] == 0 ? SIZE : args[0];
-    N = args[1] == 0 ? SIZE : args[1];
-    K = args[2] == 0 ? SIZE : args[2];
+    M = (cont.M) ? (*cont.M) : (SIZE);
+    K = (cont.K) ? (*cont.K) : (SIZE);
   }
-  seed = args[5] == 0 ? time(NULL) : args[5];
-  repeats = args[8] == 0 ? REPEATS : args[8];
-
-  // use second part of array for optimized times
-  exec_times_2D = new unsigned long[repeats*2];
-  exec_times_1D = new unsigned long[repeats*2];
-
-  srand(seed);
-  delete[] args;
+  
+  exec_times_2D = new unsigned long[iterations*2];
+  exec_times_1D = new unsigned long[iterations*2];
+  
   
   VALUE **A_2d, **B_2d, **C1_2d, **C2_2d;
   VALUE *A_1d, *B_1d, *C1_1d, *C2_1d;
@@ -67,13 +69,13 @@ int main(int argc, char* argv[]){
     cout <<"Bounds (lower/upper) = " << MIN << "/" << MAX << "\n";
   }
   cout << "Seed = " << seed << "\n";
-  if(repeats > 1){
-    cout << "Sample-Size = " << repeats << "\n";
+  if(iterations > 1){
+    cout << "Sample-Size = " << iterations << "\n";
   }
   cout << 	"=================================================\n\n";
 
 
-  for(long i=0; i<repeats; i++){
+  for(long i=0; i<iterations; i++){
     // Allocation 2D
     A_2d = new VALUE*[M];
     B_2d = new VALUE*[N];
@@ -96,7 +98,7 @@ int main(int argc, char* argv[]){
     // Execution 2D
     exec_times_2D[i] = matrix_mult(A_2d, B_2d, C1_2d, M, N, K);
     
-    exec_times_2D[i+repeats] = matrix_mult_optimized(A_2d, B_2d, C2_2d, M, N, K);
+    exec_times_2D[i+iterations] = matrix_mult_optimized(A_2d, B_2d, C2_2d, M, N, K);
     
 #ifdef DEBUG
     if(!compare_2D(C1_2d, C2_2d, EPSILON, M, K)){
@@ -125,7 +127,7 @@ int main(int argc, char* argv[]){
     exec_times_1D[i] = matrix_mult(A_1d, B_1d, C1_1d, M, N, K);
     
     
-    exec_times_1D[i+repeats] = matrix_mult_optimized(A_1d, B_1d, C2_1d, M, N, K);
+    exec_times_1D[i+iterations] = matrix_mult_optimized(A_1d, B_1d, C2_1d, M, N, K);
     
     
     
@@ -145,11 +147,11 @@ int main(int argc, char* argv[]){
   }
   
   
-  // for getting the optimized average time an offset of repeats is needed
-  cout << "avg. Time (Naive, 2D):    \t" << get_Average(exec_times_2D, repeats) << " ms\n";
-  cout << "avg. Time (Optimized, 2D):\t" << get_Average(exec_times_2D+repeats, repeats) << " ms\n";
-  cout << "avg. Time (Naive, 1D):    \t" << get_Average(exec_times_1D, repeats) << " ms\n";
-  cout << "avg. Time:(Optimized, 1D):\t" << get_Average(exec_times_1D+repeats, repeats) << " ms\n\n";
+  // for getting the optimized average time an offset of iterations is needed
+  cout << "avg. Time (Naive, 2D):    \t" << get_Average(exec_times_2D, iterations) << " ms\n";
+  cout << "avg. Time (Optimized, 2D):\t" << get_Average(exec_times_2D+iterations, iterations) << " ms\n";
+  cout << "avg. Time (Naive, 1D):    \t" << get_Average(exec_times_1D, iterations) << " ms\n";
+  cout << "avg. Time:(Optimized, 1D):\t" << get_Average(exec_times_1D+iterations, iterations) << " ms\n\n";
   
   
   delete[] exec_times_2D;

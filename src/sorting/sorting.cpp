@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <boost/optional.hpp>
 
 #include "util.h"
 #include "array.h"
@@ -8,26 +9,28 @@
 #ifndef SIZE
 #define SIZE 1024
 #endif
-#ifndef REPEATS
-#define REPEATS 1
+#ifndef ITERATIONS
+#define ITERATIONS 1
 #endif
 
 using namespace std;
 
 
 int main(int argc, char* argv[]){
-	
   
-	long* args = handle_Input(argc, argv);
-	long N = (args[1] == 0) ? SIZE : args[1];
-  long seed = (args[5] == 0) ? time(NULL) : args[5];
+  Input_Container cont = get_Arguments(argc, argv);
+  if(cont.help_needed){
+    print_help(argv[0]);
+    exit(0);
+  }
+  long N, seed, iterations;
+  seed = (cont.seed) ? (*cont.seed) : (time(NULL));
   srand(seed);
+  iterations = (cont.iterations) ? (*cont.iterations) : ITERATIONS;
   
-  long repeats = args[8] == 0 ? REPEATS : args[8];
+  N = (cont.N) ? (*cont.N) : (SIZE);
   
-  unsigned long *exec_times;
-  exec_times = new unsigned long[repeats];
-	delete[](args);
+  unsigned long *exec_times = new unsigned long[iterations];
   
   cout << "\n=================================================" << "\n";
   cout << "Sorting:" << "\n";
@@ -36,8 +39,8 @@ int main(int argc, char* argv[]){
     cout << "Bounds (lower/upper) = " << MIN << "/" << MAX << "\n";
   }
   cout << "Seed = " << seed << "\n";
-  if(repeats > 1){
-    cout << "Sample-Size = " << repeats << "\n";
+  if(iterations > 1){
+    cout << "Sample-Size = " << iterations << "\n";
   }
   cout << 	"=================================================" << "\n\n";
   
@@ -47,7 +50,7 @@ int main(int argc, char* argv[]){
   int* sorted_list = new int[N];
   
   
-  for(long i=0; i< repeats; i++){
+  for(long i=0; i< iterations; i++){
     init_1D(list, N, MIN, MAX);
 
 #ifdef DEBUG
@@ -66,7 +69,7 @@ int main(int argc, char* argv[]){
 #endif
   }
 
-  cout << "avg. Time: \t" << get_Average(exec_times, repeats) << " ms\n\n";
+  cout << "avg. Time: \t" << get_Average(exec_times, iterations) << " ms\n\n";
   
   
   // Finalization

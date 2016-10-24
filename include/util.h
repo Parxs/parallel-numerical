@@ -1,7 +1,10 @@
 #ifndef UTIL_H
 #define UTIL_H
 
+#include <boost/optional.hpp>
+
 #include "util.hxx"
+
 
 // as probably not all threads can do work split work even more to avoid one doing much more than the others
 #ifndef FACTOR_WORK
@@ -9,6 +12,21 @@
 #endif
 
 #define MAX_ARGS 9
+
+class Input_Container{
+public:
+  boost::optional<long> N;
+  boost::optional<long> M;
+  boost::optional<long> K;
+  
+  boost::optional<long> X;
+  
+  boost::optional<long> seed;
+  
+  boost::optional<long> iterations;
+  
+  bool help_needed;
+};
 
 extern int num_threads;
 
@@ -26,10 +44,9 @@ T get_Average(T *list, long sample_size);
 template <typename T>
 void log_Difference(std::ostream& os, T expected, T gotten);
 
+void print_help(char *program_Name);
 
-
-long* handle_Input(int argc, char* argv[]);
-
+Input_Container get_Arguments(int argc, char *argv[]);
 
 unsigned long time_ms();
 

@@ -14,7 +14,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DDEBUG -std=c++11 -pthread -Wall -Werro
 
 find_package(Threads)
 find_package(Boost)
-#find_package(Boost COMPONENTS optional REQUIRED)
+
 find_path(BOOST_FILESYSTEM_INCLUDE_DIRS boost/optional.hpp)
 
 

@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <boost/optional.hpp>
 
 #include "util.h"
 #include "array.h"
@@ -17,25 +18,27 @@ using namespace std;
 #ifndef MAX
 #define MAX 10.0
 #endif
-#ifndef REPEATS
-#define REPEATS 1
+#ifndef ITERATIONS
+#define ITERATIONS 1
 #endif
 
 int main(int argc, char* argv[]){
   // time measuring
   unsigned long *exec_times;
   
-  long* args = handle_Input(argc, argv);
-  
-  long N, seed, repeats;
-  N = args[1] == 0 ? SIZE : args[1];
-  seed = args[5] == 0 ? time(NULL) : args[5];
-  repeats = args[8] == 0 ? REPEATS : args[8];
-
-  exec_times = new unsigned long[repeats];
-
+  Input_Container cont = get_Arguments(argc, argv);
+  if(cont.help_needed){
+    print_help(argv[0]);
+    exit(0);
+  }
+  long N, seed, iterations;
+  seed = (cont.seed) ? (*cont.seed) : (time(NULL));
   srand(seed);
-  delete[] args;
+  iterations = (cont.iterations) ? (*cont.iterations) : ITERATIONS;
+  
+  N = (cont.N) ? (*cont.N) : (SIZE);
+  
+  exec_times = new unsigned long[iterations];
   
   
   VALUE **A;
@@ -48,12 +51,12 @@ int main(int argc, char* argv[]){
     cout <<"Bounds (lower/upper) = " << MIN << "/" << MAX << "\n";
   }
   cout << "Seed = " << seed << "\n";
-  if(repeats > 1){
-    cout << "Sample-Size = " << repeats << "\n";
+  if(iterations > 1){
+    cout << "Sample-Size = " << iterations << "\n";
   }
   cout << 	"=================================================\n\n";
 
-  for(long i=0; i<repeats; i++){
+  for(long i=0; i<iterations; i++){
     // Allocation
     A = new VALUE*[N];
     allocate_2D(A, N, N);
@@ -102,7 +105,7 @@ int main(int argc, char* argv[]){
     
   }
 
-  cout << "avg. Time: \t" << get_Average(exec_times, repeats) << " ms\n\n";
+  cout << "avg. Time: \t" << get_Average(exec_times, iterations) << " ms\n\n";
   delete[] exec_times;
 
 

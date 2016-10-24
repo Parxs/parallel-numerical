@@ -17,12 +17,12 @@ double get_rand<double>(double lower, double upper);
 template <>
 float get_rand<float>(float lower, float upper);
 
-long* handle_Input(int argc, char* argv[]);
+Input_Container get_Arguments(int argc, char *argv[]);
+long* handle_Input(int argc, char *argv[]);
 
 unsigned long time_ms();
 
 int get_num_threads(long N);
-
 
 
 /*====================================================================*/
@@ -76,92 +76,77 @@ float get_rand<float>(float lower, float upper){
   return f;  
 }
 
+/**
+ * @brief Prints which arguments can be given to the executable.
+ **/
+void print_help(char program_Name[]){
+  cout << "\n> USAGE:" << program_Name << "<arguments>" << "\n";
+  cout << "----------------------------------------------------------------\n";
+  cout << "> possible arguments: (be kind - only minimal error handling!)\n";
+  cout << "-H                         \t... prints help\n";
+  cout << "-N<num>(, -M<num>, -K<num>)\t... set size(s - if applicable)\n";
+  cout << "-S<seed>                   \t... use the given num as random seed\n";
+  cout << "-X<num>                    \t... (if applicable) uses this number for X (e.g. search)\n";
+  cout << "-I<num>                    \t... sample size of executions for average time\n";
+  
+  cout << endl;
+  exit(0);
+}
 
 /**
- * @brief Parses the arguments given for possible sizes of the matrices.
+ * @brief Parses the arguments given and returns their values inside
+ * an Input_Container
  **/
-long* handle_Input(int argc, char* argv[]){
-  long* sizes = new long[MAX_ARGS];
+Input_Container get_Arguments(int argc, char *argv[]){
+  Input_Container cont = Input_Container();
+  cont.help_needed = false;
   
-  for(int i=0; i<MAX_ARGS; i++){
-    sizes[i] = 0l;
-    // as unsigned is used negative numbers are impossible
-    // could become problematic as soon as the default value
-    // of lower bound stops being 0 and or negative numbers 
-    // get allowed 
-  }
-
-  // first argument is always the name of the program itself
+  // first argument is name of program
   for(int i=1; i<argc; i++){
+   
+    //ignore arguments with the wrong formatting
     if(argv[i][0] != '-'){
       continue;
     }
-    int index;
+    
+    long tmp;
     switch(toupper(argv[i][1])){
-    case 'H':{
-      cout << "\nUSAGE:" << argv[0] << "<arguments>" << "\n";
-      cout << "possible arguments: (currently only unsigned integers possible!)\n";
-      cout << "----------------------------------------------------------------\n";
-      cout << "-H                         \t... prints help\n";
-      cout << "-N<num>(, -M<num>, -K<num>)\t... set size(s - if applicable)\n";
-      cout << "-R<seed>                   \t... use the given num as random seed\n";
-      cout << "-F<num>                    \t... (if applicable) searches for the given number\n";
-      cout << "-X<num>                    \t... (if applicable) uses this number for X\n";
-      cout << "-I<num>                    \t... from how many executions the average should be taken\n";
-      
-      cout << endl;
-      exit(0);
+      case 'H' :{
+        cont.help_needed = true;
+        break;
+      }
+      case 'N' :{
+        tmp = abs(std::stol(argv[i]+2));
+        cont.N = (tmp==0) ? 1 : tmp;
+        break;
+      }
+      case 'M' :{
+        tmp = abs(std::stol(argv[i]+2));
+        cont.M = (tmp==0) ? 1 : tmp;
+        break;
+      }
+      case 'K' :{
+        tmp = abs(std::stol(argv[i]+2));
+        cont.K = (tmp==0) ? 1 : tmp;
+        break;
+      }
+      case 'X' :{
+        cont.X = std::stol(argv[i]+2);
+        break;
+      }
+      case 'I' :{
+        tmp = abs(std::stol(argv[i]+2));
+        cont.iterations = (tmp==0) ? 1 : tmp;
+        break;
+      }
+      case 'S' :{
+        tmp = abs(std::stol(argv[i]+2));
+        cont.seed = tmp;
+        break;
+      }
     }
-    // sizes 
-    case 'M':{
-      index = 0;
-      break;
-    }
-    case 'N':{
-      index = 1;
-      break;
-    }
-    case 'K':{
-      index = 2;
-      break;
-    }
-    // Lower & Upper bounds
-    case 'U':{
-      index = 3;
-      break;
-    }
-    case 'L':{
-      index = 4;
-      break;
-    }
-    // random seed
-    case 'R':{
-      index = 5;
-      break;
-    }
-    // number to be found 
-    case 'F':{
-      index = 6;
-      break;
-    }
-    case 'X':{
-      index = 7;
-      break;
-    }
-    case 'I':{
-      index = 8;
-      break;
-    }
-    default :
-      continue;
-      // ignore all arguments which do not follow this format
-    }
-    sizes[index] = abs(atol(argv[i]+2));
-    // offset by 2 because the first two chars are not part of the number
-    // '-' + '<letter>' + "<number>" 
-    // TODO: currently makes all numbers positive
   }
-  return sizes;
+  return cont;
 }
 
 /**

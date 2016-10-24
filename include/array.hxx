@@ -202,7 +202,9 @@ bool compare_1D(T *A, T *B, T eps, long N){
 
 
 
-// Sorting
+/**
+ * @brief Tests whether a given list is sorted.
+ **/
 template <typename T>
 bool is_sorted(T* list, long N){
 	T last = list[0];
@@ -218,7 +220,7 @@ bool is_sorted(T* list, long N){
 
 // Printing
 template <typename T>
-void print_list_1D(T* list, long N){
+void print_List(T* list, long N){
   std::cout << std::showpos << std::scientific;
   long i;
   for(i=0; i<N; i++){
@@ -230,14 +232,9 @@ void print_list_1D(T* list, long N){
   std::cout << "\n" << std::endl;
   std::cout << std::noshowpos;
 }
-//TODO: temp fix - replace name of calls with lowercase list in the future
-template <typename T>
-void print_List_1D(T* list, long N){
-  print_list_1D(list, N);
-}
 
 template <typename T>
-void print_List_2D(T** list, long M, long N){
+void print_List(T** list, long M, long N){
   std::cout << std::showpos << std::scientific;
   long i,j;
   for(i=0; i<M; i++){
@@ -252,16 +249,18 @@ void print_List_2D(T** list, long M, long N){
 }
 
 template <typename T>
-void print_List_2D(T** list, long N){
-  print_List_2D(list, N, N);
+void print_List(T** list, long N){
+  print_List(list, N, N);
 }
 
 
-// Swapping
+/**
+ * @brief Swaps the two elements with the given index in the given list.
+ **/
 template <typename T>
-void swap(T* A, long i, long j){
+inline void swap(T* A, long i, long j){
   T tmp = A[i];
   A[i] = A[j];
   A[j] = tmp;
 }
-#endif // ARRAY_HXX
+#endif

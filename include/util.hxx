@@ -74,7 +74,7 @@ void log_Difference(std::ostream& os, T expected, T gotten){
 }
 
 
-#endif //UTIL_HXX
+#endif
 
 
 
