@@ -1,14 +1,10 @@
 /** 
  * @brief Sequential implementation of matrix multiplication.
- * @date 02.02.2016
  */
+#ifndef SEQ_MATRIX_MULT_H
+#define SEQ_MATRIX_MULT_H
 
-#include <iostream>
-#include <cstdlib>
-
-#include "matrix_mult.h"
-#include "util.h"
-
+namespace sequential{
 
 /**
  * @brief Naive matrix multiplication. Multiplies two 2D matrices.
@@ -18,23 +14,19 @@
  * There are also no checks for overflows, so it is easily possible
  * that C is not the correct result if the elements itself are too big 
  */
-unsigned long multiply_matrix2D(VALUE** A, VALUE** B, VALUE** C, long M, long N, long K){
-  unsigned long start = time_ms();
-  VALUE a,b;
-  long i, j, k;
-  for(i=0; i<M; i++){
-    for(k=0; k<K; k++){
-      for(j=0; j<N; j++){
+template <typename T>
+void multiply_matrix(T **A, T **B, T **C, long M, long N, long K){
+  T a,b;
+  for(long i=0; i<M; i++){
+    for(long k=0; k<K; k++){
+      for(long j=0; j<N; j++){
         a = A[i][j];
         b = B[j][k];
         C[i][k] += a*b;
       }
     }
   }
-  
-  return time_ms() - start;
 }
-
 
 /**
  * @brief Optimized matrix multiplication. Multiplies two 2D matrices.
@@ -46,22 +38,19 @@ unsigned long multiply_matrix2D(VALUE** A, VALUE** B, VALUE** C, long M, long N,
  * There are also no checks for overflows, so it is easily possible
  * that C is not the correct result if the elements itself are too big 
  */
-unsigned long multiply_matrix2D_optimized(VALUE** A, VALUE** B, VALUE** C, long M, long N, long K){
-  unsigned long start = time_ms();
-  VALUE a,b;
-  long i, j, k;
-  for(i=0; i<M; i++){
-    for(j=0; j<N; j++){
+template <typename T>
+void multiply_matrix_optimized(T **A, T **B, T **C, long M, long N, long K){
+  T a,b;
+  for(long i=0; i<M; i++){
+    for(long j=0; j<N; j++){
       a = A[i][j];
-      for(k=0; k<K; k++){
+      for(long k=0; k<K; k++){
         b = B[j][k];
         C[i][k] += a*b;
       }
     }
   }
-  return time_ms() - start;
 }
-
 
 /**
  * @brief Naive matrix multiplication. Multiplies two 2D matrices saved in a 1D array.
@@ -71,14 +60,14 @@ unsigned long multiply_matrix2D_optimized(VALUE** A, VALUE** B, VALUE** C, long 
  * There are also no checks for overflows, so it is easily possible
  * that C is not the correct result if the elements itself are too big 
  */
-unsigned long multiply_matrix1D(VALUE* A, VALUE* B, VALUE* C, long M, long N, long K){
-  unsigned long start = time_ms();
-  VALUE a,b;
+template <typename T>
+void multiply_matrix(T *A, T *B, T *C, long M, long N, long K){
+  T a,b;
   long a_index, b_index, c_index;
-  long i, j, k;
-  for(i=0; i<M; i++){
-    for(k=0; k<K; k++){
-      for(j=0; j<N; j++){
+  
+  for(long i=0; i<M; i++){
+    for(long k=0; k<K; k++){
+      for(long j=0; j<N; j++){
         a_index = i*N+j;
         b_index = j*K+k;
         c_index = i*K+k;
@@ -88,9 +77,7 @@ unsigned long multiply_matrix1D(VALUE* A, VALUE* B, VALUE* C, long M, long N, lo
       }
     }
   } 
-  return time_ms() - start; 
-}
-
+} 
 
 /**
  * @brief Optimized matrix multiplication. Multiplies two 2D matrices saved in a 1D array.
@@ -100,16 +87,16 @@ unsigned long multiply_matrix1D(VALUE* A, VALUE* B, VALUE* C, long M, long N, lo
  * There are also no checks for overflows, so it is easily possible
  * that C is not the correct result if the elements itself are too big 
  */
-unsigned long multiply_matrix1D_optimized(VALUE* A, VALUE* B, VALUE* C, long M, long N, long K){
-  unsigned long start = time_ms();
-  VALUE a,b;
+template <typename T>
+void multiply_matrix_optimized(T *A, T *B, T *C, long M, long N, long K){
+  T a,b;
   long a_index, b_index, c_index;
-  long i, j, k;
-  for(i=0; i<M; i++){
-    for(j=0; j<N; j++){
+  
+  for(long i=0; i<M; i++){
+    for(long j=0; j<N; j++){
       a_index = i*N+j;
       a = A[a_index];
-      for(k=0; k<K; k++){
+      for(long k=0; k<K; k++){
         b_index = j*K+k;
         c_index = i*K+k;
         b = B[b_index];
@@ -117,5 +104,7 @@ unsigned long multiply_matrix1D_optimized(VALUE* A, VALUE* B, VALUE* C, long M, 
       }
     }
   }  
-  return time_ms() - start;
 }
+
+}
+#endif

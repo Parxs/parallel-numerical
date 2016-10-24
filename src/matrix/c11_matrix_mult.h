@@ -1,23 +1,20 @@
 /** 
- * @brief Parallel implementation of matrix multiplication via OpenMP.
- * @date 02.02.2016
+ * @brief Parallel implementation of matrix multiplication via features
+ * of C11.
  */
-
+#ifndef C11_MATRIX_MULT_H
+#define C11_MATRIX_MULT_H
 
 #include <future>
 #include <thread>
 #include <vector>
-#include <iostream>
 
 #include "util.h"
-#include "matrix_mult.h"
 
-int num_workers;
-
-using namespace std;
-
-
-void _execute(function<bool (long, long, int)> func, int num_tasks, long num_elems){
+namespace cEleven{
+  
+void _execute(std::function<bool (long, long, int)> func, int num_tasks, long num_elems){
+  using namespace std;
   vector<future<bool>> futures;
   int t, extra; // extra will at most be as big as num_tasks-1
   long chunksize, start_task, end_task;
@@ -46,7 +43,6 @@ void _execute(function<bool (long, long, int)> func, int num_tasks, long num_ele
   }
 }
 
-
 /**
  * @brief Naive matrix multiplication. Multiplies two 2D matrices.
  *
@@ -55,15 +51,14 @@ void _execute(function<bool (long, long, int)> func, int num_tasks, long num_ele
  * There are also no checks for overflows, so it is easily possible
  * that C is not the correct result if the elements itself are too big 
  */
-unsigned long multiply_matrix2D(VALUE** A, VALUE** B, VALUE** C, long M, long N, long K){
-  num_workers = get_num_threads(M);
+template <typename T>
+void multiply_matrix(T **A, T **B, T **C, long M, long N, long K){
   auto code = [ &A, &B, &C, N, K](long start_task, long end_task, int thid) -> bool
   {
-    VALUE a,b;
-    long i,j,k;
-    for(i=start_task; i<end_task; i++){
-      for(k=0; k<K; k++){
-        for(j=0; j<N; j++){
+    T a,b;
+    for(long i=start_task; i<end_task; i++){
+      for(long k=0; k<K; k++){
+        for(long j=0; j<N; j++){
           a = A[i][j];
           b = B[j][k];
           C[i][k] += a*b;
@@ -73,13 +68,8 @@ unsigned long multiply_matrix2D(VALUE** A, VALUE** B, VALUE** C, long M, long N,
     return true;
   };
   
-  unsigned long start = time_ms();
-  
-  _execute(code, num_workers, M);
-  
-  return time_ms() - start;
+  _execute(code, get_num_threads(M), M);
 }
-
 
 /**
  * @brief Optimized matrix multiplication. Multiplies two 2D matrices.
@@ -91,17 +81,15 @@ unsigned long multiply_matrix2D(VALUE** A, VALUE** B, VALUE** C, long M, long N,
  * There are also no checks for overflows, so it is easily possible
  * that C is not the correct result if the elements itself are too big 
  */
-unsigned long multiply_matrix2D_optimized(VALUE** A, VALUE** B, VALUE** C, long M, long N, long K){
-  num_workers = get_num_threads(M);
-  
+template <typename T>
+void multiply_matrix_optimized(T **A, T **B, T **C, long M, long N, long K){
   auto code = [ &A, &B, &C, N, K](long start_task, long end_task, int thid) -> bool
   {
-    VALUE a,b;
-    long i,j,k;
-    for(i=start_task; i<end_task; i++){
-      for(j=0; j<N; j++){
+    T a,b;
+    for(long i=start_task; i<end_task; i++){
+      for(long j=0; j<N; j++){
         a = A[i][j];
-        for(k=0; k<K; k++){
+        for(long k=0; k<K; k++){
           b = B[j][k];
           C[i][k] += a*b;
         }
@@ -110,13 +98,8 @@ unsigned long multiply_matrix2D_optimized(VALUE** A, VALUE** B, VALUE** C, long 
     return true;
   };
   
-  unsigned long start = time_ms();
-  
-  _execute(code, num_workers, M);
-  
-  return time_ms() - start;
+  _execute(code, get_num_threads(M), M);
 }
-
 
 /**
  * @brief Naive matrix multiplication. Multiplies two 2D matrices saved in a 1D array.
@@ -126,17 +109,16 @@ unsigned long multiply_matrix2D_optimized(VALUE** A, VALUE** B, VALUE** C, long 
  * There are also no checks for overflows, so it is easily possible
  * that C is not the correct result if the elements itself are too big 
  */
-unsigned long multiply_matrix1D(VALUE* A, VALUE* B, VALUE* C, long M, long N, long K){
-  num_workers = get_num_threads(M);
-  
+template <typename T>
+void multiply_matrix(T *A, T *B, T *C, long M, long N, long K){
   auto code = [ &A, &B, &C, N, K](long start_task, long end_task, int thid) -> bool
   {
-    VALUE a,b;
+    T a,b;
     long a_index, b_index, c_index;
-    long i,j,k;
-    for(i=start_task; i<end_task; i++){
-      for(k=0; k<K; k++){
-        for(j=0; j<N; j++){
+    
+    for(long i=start_task; i<end_task; i++){
+      for(long k=0; k<K; k++){
+        for(long j=0; j<N; j++){
           a_index = i*N+j;
           b_index = j*K+k;
           c_index = i*K+k;
@@ -149,13 +131,8 @@ unsigned long multiply_matrix1D(VALUE* A, VALUE* B, VALUE* C, long M, long N, lo
     return true;
   };
   
-  unsigned long start = time_ms();
-  
-  _execute(code, num_workers, M);
-  
-  return time_ms() - start; 
-}
-
+  _execute(code, get_num_threads(M), M);
+} 
 
 /**
  * @brief Optimized matrix multiplication. Multiplies two 2D matrices saved in a 1D array.
@@ -165,21 +142,20 @@ unsigned long multiply_matrix1D(VALUE* A, VALUE* B, VALUE* C, long M, long N, lo
  * There are also no checks for overflows, so it is easily possible
  * that C is not the correct result if the elements itself are too big 
  */
-unsigned long multiply_matrix1D_optimized(VALUE* A, VALUE* B, VALUE* C, long M, long N, long K){
-  num_workers = get_num_threads(M);
-  
-  VALUE** ptr = &C;
-  auto code = [ &A, &B, ptr, N, K](long start_task, long end_task, int thid) -> bool
+template <typename T>
+void multiply_matrix_optimized(T *A, T *B, T *C, long M, long N, long K){
+  //VALUE** ptr = &C;
+  auto code = [ &A, &B, &C,  N, K](long start_task, long end_task, int thid) -> bool
   {
-    VALUE *C = *ptr;
-    VALUE a,b;
+    //VALUE *C = *ptr;
+    T a,b;
     long a_index, b_index, c_index;
-    long i,j,k;
-    for(i=start_task; i<end_task; i++){
-      for(j=0; j<N; j++){
+    
+    for(long i=start_task; i<end_task; i++){
+      for(long j=0; j<N; j++){
         a_index = i*N+j;
         a = A[a_index];
-        for(k=0; k<K; k++){
+        for(long k=0; k<K; k++){
           b_index = j*K+k;
           c_index = i*K+k;
           b = B[b_index];
@@ -189,10 +165,9 @@ unsigned long multiply_matrix1D_optimized(VALUE* A, VALUE* B, VALUE* C, long M, 
     } 
     return true; 
   };
-  
-  unsigned long start = time_ms();
-  
-  _execute(code, num_workers, M);
-  
-  return time_ms() - start;
+
+  _execute(code, get_num_threads(M), M);
 }
+
+}
+#endif

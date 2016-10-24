@@ -21,15 +21,15 @@ set(inFiles matrix_mult)
 foreach(inFileName ${inFiles})
 #=======================================================================
 # Sequential
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/seq_${inFileName}.cpp)
-  add_executable(seq_${inFileName} seq_${inFileName}.cpp ${SourceList})
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/seq_helper.cpp)
+  add_executable(seq_${inFileName} seq_helper.cpp ${SourceList})
   target_link_libraries(seq_${inFileName} util)
 endif()
 
 #=======================================================================
 # C11
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/c11_${inFileName}.cpp)
-  add_executable(c11_${inFileName} c11_${inFileName}.cpp ${SourceList})
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/c11_helper.cpp)
+  add_executable(c11_${inFileName} c11_helper.cpp ${SourceList})
   target_link_libraries(c11_${inFileName} util)
 endif()
 
@@ -41,8 +41,8 @@ if(OPENMP_FOUND)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${OpenMP_CXX_FLAGS}")
 	set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${OpenMP_EXE_LINKER_FLAGS}")
 endif()
-if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/omp_${inFileName}.cpp)
-  add_executable(omp_${inFileName} omp_${inFileName}.cpp ${SourceList})
+if(EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/omp_helper.cpp)
+  add_executable(omp_${inFileName} omp_helper.cpp ${SourceList})
   target_link_libraries(omp_${inFileName} util)
 endif()
 

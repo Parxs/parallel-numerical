@@ -1,13 +1,11 @@
 /** 
  * @brief Parallel implementation of matrix multiplication via OpenMP.
- * @date 02.02.2016
  */
+#ifndef OMP_MATRIX_MULT_H
+#define OMP_MATRIX_MULT_H
 
+namespace openMP{
 
-#include <omp.h>
-
-#include "util.h"
-#include "matrix_mult.h"
 /**
  * @brief Naive matrix multiplication. Multiplies two 2D matrices.
  *
@@ -16,28 +14,20 @@
  * There are also no checks for overflows, so it is easily possible
  * that C is not the correct result if the elements itself are too big 
  */
-unsigned long multiply_matrix2D(VALUE** A, VALUE** B, VALUE** C, long M, long N, long K){
-  double start = omp_get_wtime();
-  VALUE a,b;
-  long i,k,j;
-#pragma omp parallel shared(A, B, C) private(a,b,i,k,j)
-  {
-  #pragma omp for
-  for(i=0; i<M; i++){
-    for(k=0; k<K; k++){
-      for(j=0; j<N; j++){
+template <typename T>
+void multiply_matrix(T **A, T **B, T **C, long M, long N, long K){
+  T a,b;
+  #pragma omp parallel for  shared(A, B, C) private(a,b)
+  for(long i=0; i<M; i++){
+    for(long k=0; k<K; k++){
+      for(long j=0; j<N; j++){
         a = A[i][j];
         b = B[j][k];
         C[i][k] += a*b;
       }
     }
   }
-  }
-  double exec_time = omp_get_wtime() - start;
-  exec_time *= 1000;
-  return (unsigned long) exec_time;
 }
-
 
 /**
  * @brief Optimized matrix multiplication. Multiplies two 2D matrices.
@@ -49,28 +39,20 @@ unsigned long multiply_matrix2D(VALUE** A, VALUE** B, VALUE** C, long M, long N,
  * There are also no checks for overflows, so it is easily possible
  * that C is not the correct result if the elements itself are too big 
  */
-unsigned long multiply_matrix2D_optimized(VALUE** A, VALUE** B, VALUE** C, long M, long N, long K){
-  double start = omp_get_wtime();
-  VALUE a,b;
-  long i, k, j;
-#pragma omp parallel shared(A, B, C) private(a,b,i,k,j)
-  {
-  #pragma omp for
-  for(i=0; i<M; i++){
-    for(j=0; j<N; j++){
+template <typename T>
+void multiply_matrix_optimized(T **A, T **B, T **C, long M, long N, long K){
+  T a,b;
+  #pragma omp parallel for  shared(A, B, C) private(a,b)
+  for(long i=0; i<M; i++){
+    for(long j=0; j<N; j++){
       a = A[i][j];
-      for(k=0; k<K; k++){
+      for(long k=0; k<K; k++){
         b = B[j][k];
         C[i][k] += a*b;
       }
     }
   }
-  }
-  double exec_time = omp_get_wtime() - start;
-  exec_time *= 1000;
-  return (unsigned long) exec_time;
 }
-
 
 /**
  * @brief Naive matrix multiplication. Multiplies two 2D matrices saved in a 1D array.
@@ -80,17 +62,15 @@ unsigned long multiply_matrix2D_optimized(VALUE** A, VALUE** B, VALUE** C, long 
  * There are also no checks for overflows, so it is easily possible
  * that C is not the correct result if the elements itself are too big 
  */
-unsigned long multiply_matrix1D(VALUE* A, VALUE* B, VALUE* C, long M, long N, long K){
-  double start = omp_get_wtime();
-  VALUE a,b;
+template <typename T>
+void multiply_matrix(T *A, T *B, T *C, long M, long N, long K){
+  T a,b;
   long a_index, b_index, c_index;
-  long i, k, j;
-#pragma omp parallel shared(A, B, C) private(a,b,i,k,j,a_index,b_index,c_index)
-  {
-  #pragma omp for 
-  for(i=0; i<M; i++){
-    for(k=0; k<K; k++){
-      for(j=0; j<N; j++){
+  
+  #pragma omp parallel for shared(A, B, C) private(a,b,a_index,b_index,c_index)
+  for(long i=0; i<M; i++){
+    for(long k=0; k<K; k++){
+      for(long j=0; j<N; j++){
         a_index = i*N+j;
         b_index = j*K+k;
         c_index = i*K+k;
@@ -100,12 +80,7 @@ unsigned long multiply_matrix1D(VALUE* A, VALUE* B, VALUE* C, long M, long N, lo
       }
     }
   } 
-  }
-  double exec_time = omp_get_wtime() - start;
-  exec_time *= 1000;
-  return (unsigned long) exec_time;
-}
-
+} 
 
 /**
  * @brief Optimized matrix multiplication. Multiplies two 2D matrices saved in a 1D array.
@@ -115,28 +90,25 @@ unsigned long multiply_matrix1D(VALUE* A, VALUE* B, VALUE* C, long M, long N, lo
  * There are also no checks for overflows, so it is easily possible
  * that C is not the correct result if the elements itself are too big 
  */
-unsigned long multiply_matrix1D_optimized(VALUE* A, VALUE* B, VALUE* C, long M, long N, long K){
-  double start = omp_get_wtime();
-  VALUE a,b;
+template <typename T>
+void multiply_matrix_optimized(T *A, T *B, T *C, long M, long N, long K){
+  T a,b;
   long a_index, b_index, c_index;
-  long i, j, k;
-#pragma omp parallel shared(A, B, C) private(a,b,i,k,j,a_index,b_index,c_index)
-  {
-  #pragma omp for private(a,b, a_index, b_index, c_index)
-  for(i=0; i<M; i++){
-    for(j=0; j<N; j++){
+  
+  #pragma omp parallel for shared(A, B, C) private(a,b,a_index,b_index,c_index)
+  for(long i=0; i<M; i++){
+    for(long j=0; j<N; j++){
       a_index = i*N+j;
       a = A[a_index];
-      for(k=0; k<K; k++){
+      for(long k=0; k<K; k++){
         b_index = j*K+k;
         c_index = i*K+k;
         b = B[b_index];
         C[c_index] += a*b;
       }
     }
-  } 
-  } 
-  double exec_time = omp_get_wtime() - start;
-  exec_time *= 1000;
-  return (unsigned long) exec_time;
+  }  
 }
+
+}
+#endif
