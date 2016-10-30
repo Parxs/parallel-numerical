@@ -55,7 +55,7 @@ T get_Average(T *list, long sample_size){
   
   // add results together to get average
   avg_time = std::round(avg_time);
-  return (long) avg_time;
+  return (T) avg_time;
 }
 
 
