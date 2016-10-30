@@ -4,6 +4,7 @@
 #include <cstdlib>
 #include <limits>
 #include <random>
+#include <cmath>
 #include <iostream>
 
 /*====================================================================*/
@@ -43,24 +44,18 @@ T get_rand(T lower, T upper){
 
 template <typename T>
 T get_Average(T *list, long sample_size){
-  T avg_time = 0;
-  T sum = 0;
+  // double is used for higher precision when dividing
+  double avg_time = 0;
   
   for(long i=0; i<sample_size; i++){
-    T tmp = list[i];
-    // try summing up before dividing if element is small enough to 
-    // keep the amount of rounding errors low
-    if(tmp < (std::numeric_limits<T>::max()/sample_size)){
-      sum += tmp;
-    }else{
-      // if the element is too big divide first and then sum up
-      avg_time += tmp/sample_size;
-    }
+    double tmp = (double) list[i];
+    
+    avg_time += tmp/sample_size;
   }
   
   // add results together to get average
-  avg_time += sum/sample_size;
-  return avg_time;
+  avg_time = std::round(avg_time);
+  return (long) avg_time;
 }
 
 
