@@ -28,8 +28,9 @@ int get_num_threads(long N);
 /*====================================================================*/
 // Implementations
 /*====================================================================*/
-
-// template specializations must be inside the source to avoid that the linker sees them twice
+/** 
+ * @brief Instantiation of the get_rand()-function for float.
+ **/
 template <>
 double get_rand<double>(double lower, double upper){
   bool sign = false;
@@ -53,6 +54,9 @@ double get_rand<double>(double lower, double upper){
   return f;    
 }
 
+/** 
+ * @brief Instantiation of the get_rand()-function for float.
+ **/
 template <>
 float get_rand<float>(float lower, float upper){
   bool sign = false;
@@ -161,20 +165,25 @@ unsigned long time_ms(){
 }
 
 
+/**
+ * @brief Returns the numbers of threads that should be used to get the most out of the machine.
+ * 
+ * I have yet to find more information on the optimal way
+ * to split tasks for the C++11 threads.
+ * As async more or less uses a threadpool it is assumed that
+ * it is better to split the work in smaller chunks and let one of
+ * those threads do more tasks than not splitting
+ * to get a rough estimate I am using the hardware_concurrency()
+ * so that I at least know how many threads there can be at most.
+ * The tasks are split even more as it is probably very unlikely that
+ * all of the threads can be used at the same time
+ * 
+ * After a bit of testing it seems like that currently no threadpool
+ * is used on linux (creating a lot of threads because of divide&
+ * conquer leads to stop)
+ **/
 int get_num_threads(long N){
-  /* I have yet to find more information on the optimal way
-   * to split tasks for the C++11 threads.
-   * As async more or less uses a threadpool it is assumed that
-   * it is better to split the work in smaller chunks and let one of
-   * those threads do more tasks than not splitting
-   * to get a rough estimate I am using the hardware_concurrency()
-   * so that I at least know how many threads there can be at most.
-   * The tasks are split even more as it is probably very unlikely that
-   * all of the threads can be used at the same time
-   * 
-   * After a bit of testing it seems like that currently no threadpool
-   * is used on linux (creating a lot of threads because of divide&
-   * conquer leads to stop)
+  /*
    * */
   if(num_threads < 1){
 #ifdef DEBUG

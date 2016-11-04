@@ -51,7 +51,7 @@ int main(int argc, char* argv[]){
   
   
   for(long i=0; i< iterations; i++){
-    init_1D(list, N, MIN, MAX);
+    init(list, N, MIN, MAX);
 
 #ifdef DEBUG
     if(is_sorted(list, N)){

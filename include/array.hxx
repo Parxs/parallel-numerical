@@ -8,31 +8,30 @@
 // Allocating
 /**
  * @brief Allocates the second dimension of a 2D array.
- * 
- * Uses calloc so elements will be initialized.
  **/
 template <typename T>
-void allocate_2D(T** A, long M, long N){
-  long i;
-  for(i=0; i<M; i++){
+void allocate(T** A, long M, long N){
+  for(long i=0; i<M; i++){
     A[i] = new T[N];
   }
 }
 
+/**
+ * @brief Allocates the second dimension of a 2D array when both of its dimensions are equal.
+ **/
 template <typename T>
-void allocate_2D(T** A, long N){
-  allocate_2D(A, N, N);
+void allocate(T** A, long N){
+  allocate(A, N, N);
 }
 
 
 // Finalizing
 /**
- * @brief Frees the second dimension of a given array & the array itself.
+ * @brief Frees a 2D array where its second dimension is N.
  **/
 template <typename T>
 void delete_2D(T** A, long N){
-  long i;
-  for(i=0; i<N; i++){
+  for(long i=0; i<N; i++){
     delete[] A[i];
   }
   delete[] A;
@@ -41,42 +40,57 @@ void delete_2D(T** A, long N){
 
 // Initializing
 /**
- * @brief Initializes an 2D array with postive random numbers.
+ * @brief Initializes an 2D array with random numbers.
  **/
 template <typename T>
-void init_2D(T** A, long M, long N, T lower, T upper){
-  long i, j;
-  for(i=0; i<M; i++){
-    for(j=0; j<N; j++){
+void init(T** A, long M, long N, T lower, T upper){
+  for(long i=0; i<M; i++){
+    for(long j=0; j<N; j++){
       A[i][j] = get_rand(lower, upper);
     }
   }
 }
 
 /**
- * @brief Initializes an 1D array with postive random numbers.
+ * @brief Initializes an 1D array with random numbers.
  **/
 template <typename T>
-void init_1D(T* A, long N, T lower, T upper){
-  long i;
-  for(i=0; i<N; i++){
+void init(T* A, long N, T lower, T upper){
+  for(long i=0; i<N; i++){
     A[i]= get_rand(lower, upper);
   }
 }
 
+/**
+ * @brief Initializes a 2D array with the identity-matrix of NxN.
+ **/
 template <typename T>
 void init_Identity(T **A, long N){
-  long i,j;
-  for(i=0; i<N; i++){
-    for(j=0; j<N; j++){
+  for(long i=0; i<N; i++){
+    for(long j=0; j<N; j++){
       // fill with 0s
       A[i][j] = (T)0;
     }
     // overwrite diagonal with 1s
     A[i][i] = (T)1;
   }
-  
 }
+
+/**
+ * @brief Initializes the given 2D array with random numbers such that it will be symmetric.
+ **/
+template <typename T>
+void init_Symmetric(T **A, long N, T lower, T upper){
+  for(long i=0; i<N; i++){
+    A[i][i] = get_rand(lower, upper);
+    for(long j=i+1; j<N; j++){
+      T rand = get_rand(lower, upper);
+      A[i][j] = rand;
+      A[j][i] = rand;
+    }
+  }
+}
+
 
 // Utility
 // Filling
@@ -84,12 +98,11 @@ void init_Identity(T **A, long N){
  * @brief Fills an 2D array with the given element.
  **/
 template <typename T>
-void fill_2D(T** A, long M, long N, T elem){
-  long i,j;
-  for(i=0; i<M; i++){
-    for(j=0; j<N; j++){
+void fill(T** A, long M, long N, T elem){
+  for(long i=0; i<M; i++){
+    for(long j=0; j<N; j++){
       A[i][j] = elem;  
-	}
+    }
   }
 }
 
@@ -97,43 +110,65 @@ void fill_2D(T** A, long M, long N, T elem){
  * @brief Fills an 1D array with the given element.
  **/
 template <typename T>
-void fill_1D(T* A, long N, T elem){
-  long i;
-  for(i=0; i<N; i++){
+void fill(T* A, long N, T elem){
+  for(long i=0; i<N; i++){
     A[i] = elem;  
   }
 }
 
-// Copying
+/**
+ * @brief Reconstructs a symmetric matrix out of its diagonal and lower-triangle matrix A.
+ * 
+ * All of the values beneath the diagonal will be copied to above the
+ * diagonal such that the resulting array is symmetric. The resulting 
+ * matrix will be saved in A.
+ **/
 template <typename T>
-void copy_1D(T* A, T* B, long N){
-  long i;
+void reconstruct_Symmetric(T **A, long N){
+  long i,j;
   for(i=0; i<N; i++){
+    for(j=i+1; j<N; j++){
+      A[i][j] = A[j][i];
+    }
+  }
+}
+
+// Copying
+/**
+ * @brief Copy a 1D array to another 1D one.
+ * 
+ * It is assumed that the arrays are the same size.
+ **/
+template <typename T>
+void copy(T* A, T* B, long N){
+  for(long i=0; i<N; i++){
     B[i] = A[i];
   }
 }
 
+/**
+ * @brief Copy a 2D array to another 2D one.
+ * 
+ * It is assumed that the arrays are the same size.
+ **/
 template <typename T>
-void copy_2D(T** A, T** B, long M, long N){
-  long i, j;
-  for(i=0; i<M; i++){
-    for(j=0; j<N; j++){
+void copy(T** A, T** B, long M, long N){
+  for(long i=0; i<M; i++){
+    for(long j=0; j<N; j++){
       B[i][j] = A[i][j];
     }
   }
 }
 
 /**
- * @brief Copies elements from a 2D array to an 1D array.
+ * @brief Copies elements from a 2D array to an 1D one.
  *
- * It is assumed that both arrays can hold the same amount of
- * elements.
+ * It is assumed that the arrays are the same size.
  **/
 template <typename T>
-void copy_2D_to_1D(T** A, T* B, long M, long N){
-  long i, j;
-  for(i=0; i<M; i++){
-    for(j=0; j<N; j++){
+void copy_to_1D(T** A, T* B, long M, long N){
+  for(long i=0; i<M; i++){
+    for(long j=0; j<N; j++){
       B[i*N+j] = A[i][j]; 
     }
   }
@@ -142,13 +177,12 @@ void copy_2D_to_1D(T** A, T* B, long M, long N){
 
 // Comparison
 /**
- * @brief Tests whether two 2D matrices are equal and prints an error if they are not.
+ * @brief Tests whether two 2D matrices are equal.
  **/
 template <typename T>
-bool compare_2D(T **A, T **B, long M, long N){
-  long i, j;
-  for(i=0; i<M; i++){
-    for(j=0; j<N; j++){
+bool compare(T **A, T **B, long M, long N){
+  for(long i=0; i<M; i++){
+    for(long j=0; j<N; j++){
 	   if(A[i][j] != B[i][j]){
 	      return false;
 	   }
@@ -158,12 +192,11 @@ bool compare_2D(T **A, T **B, long M, long N){
 }
 
 /**
- * @brief Tests whether two 1D matrices are equal and prints an error if they are not.
+ * @brief Tests whether two 1D matrices are equal.
  **/
 template <typename T>
-bool compare_1D(T *A, T *B, long N){
-  long i;
-  for(i=0; i<N; i++){
+bool compare(T *A, T *B, long N){
+  for(long i=0; i<N; i++){
      if(A[i] != B[i]){
         return false;
      }
@@ -171,17 +204,18 @@ bool compare_1D(T *A, T *B, long N){
   return true;  	
 }
 
+/**
+ * @brief Tests whether two 2D matrices are equal up to an epsilon.
+ * 
+ * Comparing two floating point numbers is problematic because not all
+ * numbers can be stored precisely as floating point. Therefore a 
+ * certain impreciseness should be allowed and can be expressed via eps.
+ **/
 template <typename T>
-bool compare_2D(T **A, T **B, T eps, long M, long N){
-  long i, j;
-  for(i=0; i<M; i++){
-    for(j=0; j<N; j++){
+bool compare(T **A, T **B, T eps, long M, long N){
+  for(long i=0; i<M; i++){
+    for(long j=0; j<N; j++){
       if(fabs(A[i][j]-B[i][j]) > eps){
-#ifdef DEBUG
-        log_Difference(std::cout,A[i][j], B[i][j]);
-         
-#endif
-        
         return false;
       }
     }   
@@ -189,10 +223,16 @@ bool compare_2D(T **A, T **B, T eps, long M, long N){
   return true;
 }
 
+/**
+ * @brief Tests whether two 2D matrices are equal up to an epsilon.
+ * 
+ * Comparing two floating point numbers is problematic because not all
+ * numbers can be stored precisely as floating point. Therefore a 
+ * certain impreciseness should be allowed and can be expressed via eps.
+ **/
 template <typename T>
-bool compare_1D(T *A, T *B, T eps, long N){
-  long i;
-  for(i=0; i<N; i++){
+bool compare(T *A, T *B, T eps, long N){
+  for(long i=0; i<N; i++){
      if(fabs(A[i]-B[i]) > eps){
         return false;
      }
@@ -203,13 +243,12 @@ bool compare_1D(T *A, T *B, T eps, long N){
 
 
 /**
- * @brief Tests whether a given list is sorted.
+ * @brief Tests whether a given array is sorted.
  **/
 template <typename T>
 bool is_sorted(T* list, long N){
 	T last = list[0];
-  long i;
-	for(i=1; i<N; i++){
+	for(long i=1; i<N; i++){
 		if(last>list[i]){
 			return false;
 		}
@@ -219,13 +258,15 @@ bool is_sorted(T* list, long N){
 }
 
 // Printing
+/**
+ * @brief Prints the given one dimensional array.
+ **/
 template <typename T>
 void print_List(T* list, long N){
   std::cout << std::showpos << std::scientific;
-  long i;
-  for(i=0; i<N; i++){
+  for(long i=0; i<N; i++){
     std::cout << list[i] << "\t";
-    if((i+1)%10 == 0){ // because list starts with 0 not 1
+    if((i+1)%10 == 0){ // i+1 because list starts with 0 not 1
       std::cout << "\n";
     }
   }
@@ -233,12 +274,14 @@ void print_List(T* list, long N){
   std::cout << std::noshowpos;
 }
 
+/**
+ * @brief Prints the given two dimensional array.
+ **/
 template <typename T>
 void print_List(T** list, long M, long N){
   std::cout << std::showpos << std::scientific;
-  long i,j;
-  for(i=0; i<M; i++){
-    for(j=0; j<N; j++){
+  for(long i=0; i<M; i++){
+    for(long j=0; j<N; j++){
       std::cout << list[i][j];
       std::cout << "\t";
     }
@@ -248,6 +291,9 @@ void print_List(T** list, long M, long N){
   std::cout << std::noshowpos;
 }
 
+/**
+ * @brief Prints the given two dimensional array where the dimensions are the same.
+ **/
 template <typename T>
 void print_List(T** list, long N){
   print_List(list, N, N);
@@ -256,6 +302,10 @@ void print_List(T** list, long N){
 
 /**
  * @brief Swaps the two elements with the given index in the given list.
+ * 
+ * This function has the modifier inline because the function is so 
+ * small that it is preferred that the compiler inlines it to avoid 
+ * overhead.
  **/
 template <typename T>
 inline void swap(T* A, long i, long j){

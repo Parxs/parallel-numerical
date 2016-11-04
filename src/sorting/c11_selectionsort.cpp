@@ -123,7 +123,7 @@ void selectionsort(int* list, long N){
 unsigned long sort_List(int* in_list, int* out_list, long N){
   unsigned long start, end;
   
-  copy_1D(in_list, out_list, N);
+  copy(in_list, out_list, N);
   
   num_workers = get_num_threads(N);
   

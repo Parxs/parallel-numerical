@@ -42,6 +42,16 @@ T get_rand(T lower, T upper){
 }
 
 
+/**
+ * @brief Calculates the average of a given array.
+ *
+ * Because it is possible to use this function with a type that has an
+ * impercise division every gotten value is casted to a type which 
+ * allows more precise divisons.
+ * This is still not perfect as e.g. the lowest digits may be lost when
+ * the numbers are rather big but as there is no need for the resulting
+ * average to be that precise it should be no problem at all.
+ **/
 template <typename T>
 T get_Average(T *list, long sample_size){
   // double is used for higher precision when dividing
@@ -59,6 +69,9 @@ T get_Average(T *list, long sample_size){
 }
 
 
+/**
+ * @brief Log the difference between two values into the given stream.
+ **/
 template <typename T>
 void log_Difference(std::ostream& os, T expected, T gotten){
   using namespace std;

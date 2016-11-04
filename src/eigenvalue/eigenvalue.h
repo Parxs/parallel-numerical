@@ -16,20 +16,6 @@
 
 unsigned long calculate_Eigen(VALUE **A, VALUE *d, VALUE **V, long N);
 
-template <typename T>
-void init_Symmetric(T **A, long N, T lower, T upper){
-  long i,j;
-  for(i=0; i<N; i++){
-    A[i][i] = get_rand(lower, upper);
-    for(j=i+1; j<N; j++){
-      T rand = get_rand(lower, upper);
-      A[i][j] = rand;
-      A[j][i] = rand;
-    }
-  }
-  
-}
-
 template <typename T> 
 void init_Example(T **A, long N){
   A[0][0] = 3;
@@ -48,26 +34,13 @@ void init_Example(T **A, long N){
 }
 
 template <typename T>
-void reconstruct_Symmetric(T **A, long N){
-  long i,j;
-  for(i=0; i<N; i++){
-    for(j=i+1; j<N; j++){
-      A[i][j] = A[j][i];
-    }
-  }
-}
-
-
-
-template <typename T>
 bool check_Eigenvalue(T **A, T *d, T **V, long index, long N){
-  long i, j;
   bool equal = true;
   T *res = new T[N](); 
   
   // calculate A*x
-  for(i=0; i<N; i++){
-    for(j=0; j<N; j++){
+  for(long i=0; i<N; i++){
+    for(long j=0; j<N; j++){
         res[i] += A[i][j]*V[j][index];
     }
     
@@ -76,7 +49,7 @@ bool check_Eigenvalue(T **A, T *d, T **V, long index, long N){
   }
   
   // compare lambda*x (res/lambda) with x
-  for(i=0; i<N; i++){
+  for(long i=0; i<N; i++){
     if(fabs(res[i]-V[i][index]) > EPSILON){
       equal = false;
       
@@ -91,7 +64,6 @@ bool check_Eigenvalue(T **A, T *d, T **V, long index, long N){
     }
   }
   
-  
   delete[] res;
   
   return equal;
@@ -99,10 +71,8 @@ bool check_Eigenvalue(T **A, T *d, T **V, long index, long N){
 
 
 template <typename T>
-bool check_Eigenvalues(T **A, T *d, T **V, long N){
-  long i;
-  
-  for(i=0; i<N; i++){
+bool check_Eigenvalues(T **A, T *d, T **V, long N){  
+  for(long i=0; i<N; i++){
     if(!check_Eigenvalue(A, d, V, i, N)){
       return false;
     } 

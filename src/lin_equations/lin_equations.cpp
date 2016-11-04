@@ -59,7 +59,7 @@ int main(int argc, char* argv[]){
   for(long i=0; i<iterations; i++){
     // Allocation
     A = new VALUE*[N];
-    allocate_2D(A, N, N);
+    allocate(A, N, N);
     
     b = new VALUE[N];
     y = new VALUE[N];
@@ -74,11 +74,11 @@ int main(int argc, char* argv[]){
     VALUE *b_test;
     
     A_test = new VALUE*[N];
-    allocate_2D(A_test, N, N);
-    copy_2D(A, A_test, N, N);
+    allocate(A_test, N, N);
+    copy(A, A_test, N, N);
     
     b_test = new VALUE[N];
-    copy_1D(b, b_test, N);
+    copy(b, b_test, N);
 #endif 
     
     // Execution

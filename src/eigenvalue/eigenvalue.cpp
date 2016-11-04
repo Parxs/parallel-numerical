@@ -58,8 +58,8 @@ int main(int argc, char* argv[]){
  // Allocation
   A = new VALUE*[N];
   V = new VALUE*[N];
-  allocate_2D(A, N);
-  allocate_2D(V, N);
+  allocate(A, N);
+  allocate(V, N);
   
   d = new VALUE[N];
   

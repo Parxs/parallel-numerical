@@ -30,7 +30,7 @@ void bubblesort(T* list, long N){
 
 unsigned long sort_List(int* in_list, int* out_list, long N){
 	// copy to target
-	copy_1D(in_list, out_list, N);
+	copy(in_list, out_list, N);
 	
 	unsigned long start = time_ms();
 	

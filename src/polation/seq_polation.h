@@ -11,7 +11,6 @@ void seq_polation(T *x_values, T *y_values, long N, T x, T **Q){
   // Algorithm from Numerical Analysis
   // By Richard L. Burden, J. Douglas Faires
   /*==================================================================*/
-  #pragma omp parallel for
   for(long i=0; i<N; i++){
     T tmp = y_values[i];
     Q[i][0] = tmp;

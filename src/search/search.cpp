@@ -63,7 +63,7 @@ int main(int argc, char* argv[]){
 	int* list = new int[N];
   
   for(long i=0; i<iterations; i++){
-      init_1D(list, N, MIN, MAX);
+      init(list, N, MIN, MAX);
       
       std::sort(list, list+N);
       

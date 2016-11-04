@@ -26,18 +26,6 @@ int main(int argc, char* argv[]){
   // time measuring
   unsigned long *exec_times;
   
-  /*long* args = handle_Input(argc, argv);
-  
-  VALUE x;
-  long N, degree, seed, iterations;
-  N = args[1] == 0 ? SIZE : args[1];
-  degree = args[0] == 0 ? N-1 : args[0];
-  
-  seed = args[5] == 0 ? time(NULL) : args[5];
-  srand(seed);
-  
-  iterations = args[8] == 0 ? REPEATS : args[8];*/
-  
   Input_Container cont = get_Arguments(argc, argv);
   if(cont.help_needed){
     print_help(argv[0]);
@@ -50,8 +38,6 @@ int main(int argc, char* argv[]){
   
   N = (cont.N) ? (*cont.N) : (SIZE);
   degree = (cont.M) ? (*cont.M) : (N-1);
-  //TODO:  possibly allow floating point numbers
-  //but not that urgent because polation will probably not be used
   VALUE x = (cont.X) ? ((VALUE) *cont.X) : get_rand(MIN, MAX);
   
   exec_times = new unsigned long[iterations];
@@ -70,7 +56,7 @@ int main(int argc, char* argv[]){
 
   // Allocation
   VALUE **Q = new VALUE*[N];
-  allocate_2D(Q, N);
+  allocate(Q, N);
   
   // degree+1 as degree=1 refers to ax^1+bx^0 and not bx^0
   VALUE *polynomial = new VALUE[degree+1];
@@ -83,7 +69,7 @@ int main(int argc, char* argv[]){
 
   for(long i=0; i<iterations; i++){
     
-    init_1D(polynomial, degree+1, MIN_POLYNOMIAL, MAX_POLYNOMIAL);
+    init(polynomial, degree+1, MIN_POLYNOMIAL, MAX_POLYNOMIAL);
     init_Polynomial(x_values, y_values, N, polynomial, degree);
     
     // Execution

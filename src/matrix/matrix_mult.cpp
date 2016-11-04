@@ -83,17 +83,17 @@ int main(int argc, char* argv[]){
     C1_2d = new VALUE*[M];
     C2_2d = new VALUE*[M];
     
-    allocate_2D(A_2d, M, N);
-    allocate_2D(B_2d, N, K);
-    allocate_2D(C1_2d, M, K);
-    allocate_2D(C2_2d, M, K);
+    allocate(A_2d, M, N);
+    allocate(B_2d, N, K);
+    allocate(C1_2d, M, K);
+    allocate(C2_2d, M, K);
 
     // Initialization 2D
-    init_2D(A_2d, M, N, MIN, MAX);
-    init_2D(B_2d, N, K, MIN, MAX);
+    init(A_2d, M, N, MIN, MAX);
+    init(B_2d, N, K, MIN, MAX);
     
-    fill_2D(C1_2d, M, K, 0.0);
-    fill_2D(C2_2d, M, K, 0.0);
+    fill(C1_2d, M, K, 0.0);
+    fill(C2_2d, M, K, 0.0);
     
     // Execution 2D
     exec_times_2D[i] = matrix_mult(A_2d, B_2d, C1_2d, M, N, K);
@@ -101,7 +101,7 @@ int main(int argc, char* argv[]){
     exec_times_2D[i+iterations] = matrix_mult_optimized(A_2d, B_2d, C2_2d, M, N, K);
     
 #ifdef DEBUG
-    if(!compare_2D(C1_2d, C2_2d, EPSILON, M, K)){
+    if(!compare(C1_2d, C2_2d, EPSILON, M, K)){
       cout << "> ERROR: Different results for 2D matrix multiplications\n";
     }
 #endif
@@ -118,9 +118,9 @@ int main(int argc, char* argv[]){
     C2_1d = new VALUE[M*K]();
     
     // Initialization 1D
-    copy_2D_to_1D(A_2d, A_1d, M, N);
+    copy_to_1D(A_2d, A_1d, M, N);
     delete_2D(A_2d, M);
-    copy_2D_to_1D(B_2d, B_1d, N, M);
+    copy_to_1D(B_2d, B_1d, N, M);
     delete_2D(B_2d, N);
     
     // Execution 1D
@@ -132,7 +132,7 @@ int main(int argc, char* argv[]){
     
     
 #ifdef DEBUG
-    if(!compare_1D(C1_1d, C2_1d, EPSILON, M*K)){
+    if(!compare(C1_1d, C2_1d, EPSILON, M*K)){
       cout << "> ERROR: Different results for 1D matrix multiplications\n";
     }
 #endif

@@ -13,6 +13,12 @@
 
 #define MAX_ARGS 9
 
+/**
+ * @brief Container for holding the input-parameters.
+ * 
+ * All the parameters can be saved in this class and it is easy to check
+ * whether a value was set because "boost::optional" is used as type.
+ **/
 class Input_Container{
 public:
   boost::optional<long> N;
@@ -28,6 +34,7 @@ public:
   bool help_needed;
 };
 
+/* holds the number of threads that should be used to get a good performance*/
 extern int num_threads;
 
 template <typename T>

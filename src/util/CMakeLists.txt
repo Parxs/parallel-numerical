@@ -5,7 +5,7 @@ project("Util Library" C CXX)
 set(CMAKE_CXX_STANDARD 11)
 
 #set compiler flags
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -Wall -Werror -g -Wl,--no-as-needed")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -Wall -Werror -o3 -Wl,--no-as-needed")
 
 find_package(Boost)
 
