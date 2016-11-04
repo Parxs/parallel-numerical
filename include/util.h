@@ -2,6 +2,7 @@
 #define UTIL_H
 
 #include <boost/optional.hpp>
+#include <random>
 
 #include "util.hxx"
 
@@ -37,12 +38,16 @@ public:
 /* holds the number of threads that should be used to get a good performance*/
 extern int num_threads;
 
-template <typename T>
-T get_rand(T lower, T upper);
-template <>
-double get_rand<double>(double lower, double upper);
-template <>
-float get_rand<float>(float lower, float upper);
+namespace util{
+  extern std::mt19937 mt;
+}
+
+int get_rand(int lower, int upper);
+long get_rand(long lower, long upper);
+float get_rand(float lower, float upper);
+double get_rand(double lower, double upper);
+long double get_rand(long double lower, long double upper);
+
 
 template <typename T>
 T get_Average(T *list, long sample_size);

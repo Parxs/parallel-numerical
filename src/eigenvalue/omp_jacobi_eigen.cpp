@@ -8,7 +8,7 @@
 #define MAGIC_NUMBER 3
 #endif
 
-
+using namespace openMP;
 
 unsigned long calculate_Eigen(VALUE **A, VALUE *d, VALUE **V, long N){
   unsigned long start, end;
@@ -23,7 +23,7 @@ unsigned long calculate_Eigen(VALUE **A, VALUE *d, VALUE **V, long N){
   start = time_ms();
   
   // EPSILON*EPSILON such that the result is very close
-  iterations = omp_jacobi_eigen(A, N, d, V, max_iterations, EPSILON*EPSILON);
+  iterations = jacobi_eigen(A, N, d, V, max_iterations, EPSILON*EPSILON);
   
   end = time_ms()-start;
   

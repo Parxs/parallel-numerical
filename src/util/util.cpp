@@ -11,11 +11,8 @@ using namespace std;
 
 int num_threads = std::thread::hardware_concurrency() * FACTOR_WORK;
 
-
-template <>
-double get_rand<double>(double lower, double upper);
-template <>
-float get_rand<float>(float lower, float upper);
+std::random_device rd;
+std::mt19937 util::mt(rd());
 
 Input_Container get_Arguments(int argc, char *argv[]);
 long* handle_Input(int argc, char *argv[]);
@@ -28,56 +25,34 @@ int get_num_threads(long N);
 /*====================================================================*/
 // Implementations
 /*====================================================================*/
-/** 
- * @brief Instantiation of the get_rand()-function for float.
- **/
-template <>
-double get_rand<double>(double lower, double upper){
-  bool sign = false;
-  if(0 > lower){
-    lower = 0;
-    sign = true;
-  }
-  if(RAND_MAX < upper){
-    upper = RAND_MAX;
-    
-  }
-  double f = (double)rand() / RAND_MAX;
-	
-  f = lower+f*(upper-lower);
-  if(sign){
-    if(rand()%2 > 0){
-      f *= -1;
-    }
-  }
-
-  return f;    
+int get_rand(int lower, int upper){
+  std::uniform_int_distribution<int> dist(lower, upper);
+  
+  return dist(util::mt);
 }
 
-/** 
- * @brief Instantiation of the get_rand()-function for float.
- **/
-template <>
-float get_rand<float>(float lower, float upper){
-  bool sign = false;
-  if(0 > lower){
-    lower = 0;
-    sign = true;
-  }
-  if(RAND_MAX < upper){
-    upper = RAND_MAX;
-    
-  }
-  float f = (float)rand() / RAND_MAX;
-	
-  f = lower+f*(upper-lower);
-  if(sign){
-    if(rand()%2 > 0){
-      f *= -1;
-    }
-  }
+long get_rand(long lower, long upper){
+  std::uniform_int_distribution<long> dist(lower, upper);
+  
+  return dist(util::mt);
+}
 
-  return f;  
+float get_rand(float lower, float upper){
+  std::uniform_real_distribution<float> dist(lower, upper);
+  
+  return dist(util::mt);
+}
+
+double get_rand(double lower, double upper){
+  std::uniform_real_distribution<double> dist(lower, upper);
+  
+  return dist(util::mt);
+}
+
+long double get_rand(long double lower, long double upper){
+  std::uniform_real_distribution<long double> dist(lower, upper);
+  
+  return dist(util::mt);
 }
 
 /**

@@ -9,6 +9,8 @@
 #define EPS 1.0e-36
 #endif
 
+namespace openMP{
+
 template <typename T>
 struct Container { T val; long k; long l;};
 
@@ -122,7 +124,7 @@ void rotate(T **A, T *d, T **V, long k, long l, long N){
 
 
 template <typename T>
-long omp_jacobi_eigen(T **A, long N, T *d, T **V, long max_iterations, T epsilon){
+long jacobi_eigen(T **A, long N, T *d, T **V, long max_iterations, T epsilon){
   long i, k, l;
   T max;
   
@@ -143,6 +145,8 @@ long omp_jacobi_eigen(T **A, long N, T *d, T **V, long max_iterations, T epsilon
   }
   
   return -1;
+}
+
 }
 
 #endif

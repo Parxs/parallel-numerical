@@ -33,9 +33,10 @@ int main(int argc, char* argv[]){
     print_help(argv[0]);
     exit(0);
   }
-  long N, seed, iterations;
-  seed = (cont.seed) ? (*cont.seed) : (time(NULL));
-  srand(seed);
+  long N, iterations;
+  if(cont.seed){
+    util::mt.seed(*cont.seed);
+  }
   iterations = (cont.iterations) ? (*cont.iterations) : ITERATIONS;
   
   N = (cont.N) ? (*cont.N) : (SIZE);
@@ -52,7 +53,9 @@ int main(int argc, char* argv[]){
     cout << "Bounds (lower/upper) = " << MIN << "/" << MAX << "\n";
   }
   cout << "Searching for: " << find << "\n";
-  cout << "Seed = " << seed << "\n";
+  if(cont.seed){
+    cout << "Seed = " << *cont.seed << "\n";
+  }
   if(iterations > 1){
     cout << "Sample-Size = " << iterations << "\n";
   }

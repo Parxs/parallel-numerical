@@ -10,7 +10,8 @@
 #define EPS 1.0e-36
 #endif
 
-
+namespace sequential{
+  
 template <typename T>
 void copy_Diagonals_to_1D(T *x, T **A, long N){
   long i;
@@ -90,7 +91,7 @@ void rotate(T **A, T *d, T **V, long k, long l, long N){
 
 
 template <typename T>
-long seq_jacobi_eigen(T **A, long N, T *d, T **V, long max_iterations, T epsilon){
+long jacobi_eigen(T **A, long N, T *d, T **V, long max_iterations, T epsilon){
   long i, k, l;
   T max;
   
@@ -112,6 +113,8 @@ long seq_jacobi_eigen(T **A, long N, T *d, T **V, long max_iterations, T epsilon
   }
   
   return -1;
+}
+
 }
 
 #endif

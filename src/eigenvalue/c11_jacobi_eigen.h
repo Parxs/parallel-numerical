@@ -17,7 +17,7 @@
 #define THRESHOLD 50
 #endif
 
-struct Pair{long k; long l;};
+namespace cEleven{
 
 template <typename T>
 struct Container { T val; long k; long l;};
@@ -32,14 +32,6 @@ struct Container<T> _init_Container(T val, long k, long l){
   cont.k = k;
   cont.l = l;
   return cont;
-}
-
-struct Pair _init_Pair(long k, long l){
-  struct Pair pair;
-  pair.k = k;
-  pair.l = l;
-  
-  return pair;
 }
 
 /*====================================================================*/
@@ -282,7 +274,7 @@ void rotate(T **A, T *d, T **V, long k, long l, long N){
 
 
 template <typename T>
-long c11_jacobi_eigen(T **A, long N, T *d, T **V, long max_iterations, T epsilon){
+long jacobi_eigen(T **A, long N, T *d, T **V, long max_iterations, T epsilon){
   long i, k, l;
   T max;
   
@@ -302,6 +294,8 @@ long c11_jacobi_eigen(T **A, long N, T *d, T **V, long max_iterations, T epsilon
   }
   
   return -1;
+}
+
 }
 
 #endif
