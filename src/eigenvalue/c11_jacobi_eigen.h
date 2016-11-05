@@ -108,87 +108,21 @@ void copy_Diagonals_to_1D(T *d, T **A, long N){
 
 template <typename T>
 T get_Max_Off_Diagonal(T **A, long *k, long *l, long N){
-  using namespace std;
+  *l = 0;
+  *k = 0;
+  T max = 0.0;
   
-  auto code = [A, N](long start_task, long end_task) -> struct Container<T>
-  {
-    long i=0,j=1;
-    
-    
-    struct Container<T> max = _init_Container(0.0, 0, 1);
-    for(i=start_task; i<end_task; i++){
-      for(j=i+1; j<N; j++){
-        if(fabs(A[i][j]) >= max.val){
-          max.val = fabs(A[i][j]);
-          max.k = i;
-          max.l = j;
-        }
+  for(long i=0; i<N-1; i++){
+    for(long j=i+1; j<N; j++){
+      if(fabs(A[i][j]) >= max){
+        max = fabs(A[i][j]);
+        *k = i;
+        *l = j;
       }
     }
-    
-    return max;
-  };
-
-  //----------------------------
-  // parallel part
-  // can't be pulled out otherwise there will be instantiation issues
-  vector<future<struct Container<T>>> futures;
-  struct Container<T> max = _init_Container((T)0.0, 0, 1);
-  
-  
-  int t, extra; // extra will at most be as big as num_workers-1
-  long chunksize, start, end, start_task, end_task, num_workers, num_elems;
-  start = 0;
-  // N-1 because the last row has no off-diagonal elem to the right of 
-  // the diagonal elem
-  end = N-1;
-  num_elems = end-start;
-  num_workers = get_num_threads(num_elems);
-  
-  // do sequentially if N is small
-  if(num_workers < THRESHOLD){
-    max = code(start, end);
-    *k = max.k;
-    *l = max.l;
-    return max.val;
   }
   
-  // split work
-  chunksize = num_elems / num_workers;
-	extra = num_elems % num_workers; 
-	start_task = start;
-	end_task = start+chunksize;
-  
-  // run threads
-  for(t=0; t<num_workers; t++){
-    // test whether extra work still needs to be done
-    if(t < extra){
-      end_task++;
-    }
-    
-    futures.push_back(async(launch::async, code, start_task, end_task)); 
-    
-    
-    start_task = end_task;
-    end_task = start_task + chunksize;
-  }
-  
-  
-  
-  struct Container<T> tmp;
-  for(future<struct Container <T>> &f: futures){
-    tmp = f.get();
-    
-    if(tmp.val > max.val){
-      max = tmp;
-    }
-  }
-  
-
-  
-  *k = max.k;
-  *l = max.l;
-  return max.val;
+  return max;
 }
 
 template <typename T>

@@ -71,8 +71,6 @@ int main(int argc, char* argv[]){
     // Initialization
     init_Symmetric(A, N, (VALUE)MIN, (VALUE)MAX);
     
-    print_List(A, N);
-    
     // Execution
     exec_times[i] = calculate_Eigen(A, d, V, N);
     

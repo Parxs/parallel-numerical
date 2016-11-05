@@ -16,6 +16,8 @@
 
 unsigned long calculate_Eigen(VALUE **A, VALUE *d, VALUE **V, long N);
 
+
+
 template <typename T> 
 void init_Example(T **A, long N){
   A[0][0] = 3;
