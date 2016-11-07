@@ -13,9 +13,9 @@
 
 namespace cEleven{
   
-void _execute(std::function<bool (long, long, int)> func, int num_tasks, long num_elems){
+void _execute(std::function<void (long, long, int)> func, int num_tasks, long num_elems){
   using namespace std;
-  vector<future<bool>> futures;
+  vector<future<void>> futures;
   int t, extra; // extra will at most be as big as num_tasks-1
   long chunksize, start_task, end_task;
   
@@ -38,7 +38,7 @@ void _execute(std::function<bool (long, long, int)> func, int num_tasks, long nu
     end_task = start_task + chunksize;
   }
   
-  for(future<bool> &f: futures){
+  for(future<void> &f: futures){
     f.get();
   }
 }
@@ -53,7 +53,7 @@ void _execute(std::function<bool (long, long, int)> func, int num_tasks, long nu
  */
 template <typename T>
 void multiply_matrix(T **A, T **B, T **C, long M, long N, long K){
-  auto code = [ &A, &B, &C, N, K](long start_task, long end_task, int thid) -> bool
+  auto code = [ &A, &B, &C, N, K](long start_task, long end_task, int thid)
   {
     T a,b;
     for(long i=start_task; i<end_task; i++){
@@ -65,7 +65,6 @@ void multiply_matrix(T **A, T **B, T **C, long M, long N, long K){
         }
       }
     }
-    return true;
   };
   
   _execute(code, get_num_threads(M), M);
@@ -83,7 +82,7 @@ void multiply_matrix(T **A, T **B, T **C, long M, long N, long K){
  */
 template <typename T>
 void multiply_matrix_optimized(T **A, T **B, T **C, long M, long N, long K){
-  auto code = [ &A, &B, &C, N, K](long start_task, long end_task, int thid) -> bool
+  auto code = [ &A, &B, &C, N, K](long start_task, long end_task, int thid)
   {
     T a,b;
     for(long i=start_task; i<end_task; i++){
@@ -95,7 +94,6 @@ void multiply_matrix_optimized(T **A, T **B, T **C, long M, long N, long K){
         }
       }
     }
-    return true;
   };
   
   _execute(code, get_num_threads(M), M);
@@ -111,7 +109,7 @@ void multiply_matrix_optimized(T **A, T **B, T **C, long M, long N, long K){
  */
 template <typename T>
 void multiply_matrix(T *A, T *B, T *C, long M, long N, long K){
-  auto code = [ &A, &B, &C, N, K](long start_task, long end_task, int thid) -> bool
+  auto code = [ &A, &B, &C, N, K](long start_task, long end_task, int thid)
   {
     T a,b;
     long a_index, b_index, c_index;
@@ -128,7 +126,6 @@ void multiply_matrix(T *A, T *B, T *C, long M, long N, long K){
         }
       }
     }  
-    return true;
   };
   
   _execute(code, get_num_threads(M), M);
@@ -145,7 +142,7 @@ void multiply_matrix(T *A, T *B, T *C, long M, long N, long K){
 template <typename T>
 void multiply_matrix_optimized(T *A, T *B, T *C, long M, long N, long K){
   //VALUE** ptr = &C;
-  auto code = [ &A, &B, &C,  N, K](long start_task, long end_task, int thid) -> bool
+  auto code = [ &A, &B, &C,  N, K](long start_task, long end_task, int thid)
   {
     //VALUE *C = *ptr;
     T a,b;
@@ -163,7 +160,6 @@ void multiply_matrix_optimized(T *A, T *B, T *C, long M, long N, long K){
         }
       }
     } 
-    return true; 
   };
 
   _execute(code, get_num_threads(M), M);

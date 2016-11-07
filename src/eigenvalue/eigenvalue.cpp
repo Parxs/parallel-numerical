@@ -10,7 +10,7 @@
 using namespace std;
 
 #ifndef SIZE
-#define SIZE 1024
+#define SIZE 256
 #endif
 #ifndef MIN
 #define MIN -10.0

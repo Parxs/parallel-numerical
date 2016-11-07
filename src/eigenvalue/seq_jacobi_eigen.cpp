@@ -10,6 +10,16 @@
 
 using namespace sequential;
 
+/**
+ * @brief Measures the time it takes for calculating the eigenvalues of a matrix.
+ * 
+ * The matrix will be changed during its call but diagonal and lower-
+ * triangle matrix will stay the same.
+ * @param A matrix to be used for calculation
+ * @param d array which should hold the eigenvalues
+ * @param V array that should hold the eigenvectors
+ * @param N dimension of array
+ **/
 unsigned long calculate_Eigen(VALUE **A, VALUE *d, VALUE **V, long N){
   unsigned long start, end;
   long iterations, max_iterations;
