@@ -3,6 +3,14 @@
 
 #include <iostream>
 
+/**
+ * @brief Initialize the equations such that the there is a solution.
+ * @param A array for the lhs of the equations
+ * @param b array for the rhs of the equations
+ * @param N dimension
+ * @param lower lower boundary for the random numbers
+ * @param upper upper boundary for the random numbers
+ **/
 template <typename T>
 void init_Equations(T **A, T *b, long N, T lower, T upper){
   // to avoid that one equation is the scalar of another equation the 
@@ -24,6 +32,14 @@ void init_Equations(T **A, T *b, long N, T lower, T upper){
   }
 }
 
+/**
+ * @brief Calculate the backsubstitution.
+ * 
+ * Cannot be done efficiently in parallel as there are dependencies.
+ * @param A holding the matrix
+ * @param y holding the result
+ * @param x place for the solutions
+ **/
 template <typename T>
 void do_BackSub(T **A, T *y, T* x, long N){
   long i, j;
@@ -37,7 +53,15 @@ void do_BackSub(T **A, T *y, T* x, long N){
 }
 
 
-
+/**
+ * @brief Checks whether the given solution is correct.
+ * @param A array holding the lhs of the equation
+ * @param b array holding the rhs of the equation
+ * @param x array holding the solutions
+ * @param epsilon maximal allowed error
+ * @param N dimension 
+ * @return true if the solutions are correct, false otherwise
+ **/
 template <typename T>
 bool check_Solution(T **A, T *b, T *x, T epsilon, long N){
   using namespace std;

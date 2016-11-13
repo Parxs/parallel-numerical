@@ -1,14 +1,21 @@
 #ifndef OMP_INTERPOLATION_H
 #define OMP_INTERPOLATION_H
 
-
-
+namespace openMP{
 // does not scale well enough to be used for benchmarking
+/**
+ * @brief Polates x in respect to some given values
+ * @param x_values all other x values
+ * @param y_values all other y values
+ * @param N size of the arrays involved
+ * @param x value to be interpolated
+ * @param Q helper matrix which will hold resulting y
+ **/
 template <typename T>
-void omp_polation(T *x_values, T *y_values, long N, T x, T **Q){
+void polation(T *x_values, T *y_values, long N, T x, T **Q){
   /*==================================================================*/
   // Algorithm from Numerical Analysis
-  // By Richard L. Burden, J. Douglas Faires
+  // By Richard L. Burden, J. Douglas Faires, Annette M. Burden
   /*==================================================================*/
   #pragma omp parallel for
   for(long i=0; i<N; i++){
@@ -27,5 +34,7 @@ void omp_polation(T *x_values, T *y_values, long N, T x, T **Q){
         Q[i][j] = dividend/divisor; 
     }
   }
+}
+
 }
 #endif 

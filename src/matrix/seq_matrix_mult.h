@@ -1,6 +1,3 @@
-/** 
- * @brief Sequential implementation of matrix multiplication.
- */
 #ifndef SEQ_MATRIX_MULT_H
 #define SEQ_MATRIX_MULT_H
 
@@ -13,6 +10,12 @@ namespace sequential{
  * furthermore C must be initialized with 0.
  * There are also no checks for overflows, so it is easily possible
  * that C is not the correct result if the elements itself are too big 
+ * @param A array holding first matrix
+ * @param B array holding second matrix
+ * @param C array that should hold the result
+ * @param M first dimension of the first matrix
+ * @param N second dimension of the first matrix
+ * @param K second dimension of the second matrix
  */
 template <typename T>
 void multiply_matrix(T **A, T **B, T **C, long M, long N, long K){
@@ -36,7 +39,13 @@ void multiply_matrix(T **A, T **B, T **C, long M, long N, long K){
  * This algorithm has been optimized by accessing the elements which are 
  * saved closed to already accessed ones first.
  * There are also no checks for overflows, so it is easily possible
- * that C is not the correct result if the elements itself are too big 
+ * that C is not the correct result if the elements itself are too big
+ * @param A array holding first matrix
+ * @param B array holding second matrix
+ * @param C array that should hold the result
+ * @param M first dimension of the first matrix
+ * @param N second dimension of the first matrix
+ * @param K second dimension of the second matrix 
  */
 template <typename T>
 void multiply_matrix_optimized(T **A, T **B, T **C, long M, long N, long K){
@@ -58,7 +67,13 @@ void multiply_matrix_optimized(T **A, T **B, T **C, long M, long N, long K){
  * It is assumed that A,B & C are suitable for multiplying and
  * furthermore C must be initialized with 0.
  * There are also no checks for overflows, so it is easily possible
- * that C is not the correct result if the elements itself are too big 
+ * that C is not the correct result if the elements itself are too big
+ * @param A array holding first matrix
+ * @param B array holding second matrix
+ * @param C array that should hold the result
+ * @param M first dimension of the first matrix
+ * @param N second dimension of the first matrix
+ * @param K second dimension of the second matrix 
  */
 template <typename T>
 void multiply_matrix(T *A, T *B, T *C, long M, long N, long K){
@@ -85,7 +100,13 @@ void multiply_matrix(T *A, T *B, T *C, long M, long N, long K){
  * It is assumed that A,B & C are suitable for multiplying and
  * furthermore C must be initialized with 0.
  * There are also no checks for overflows, so it is easily possible
- * that C is not the correct result if the elements itself are too big 
+ * that C is not the correct result if the elements itself are too big
+ * @param A array holding first matrix
+ * @param B array holding second matrix
+ * @param C array that should hold the result
+ * @param M first dimension of the first matrix
+ * @param N second dimension of the first matrix
+ * @param K second dimension of the second matrix 
  */
 template <typename T>
 void multiply_matrix_optimized(T *A, T *B, T *C, long M, long N, long K){

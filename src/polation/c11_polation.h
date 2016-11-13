@@ -8,7 +8,16 @@
 #include <thread>
 #include <vector>
 
+namespace cEleven{
 
+
+/**
+ * @brief Executes the given function in parallel.
+ * @param func function to be done in parallel
+ * @param start index of first element that should be run through the func
+ * @param num_workers how high the parallelism should be
+ * @param num_elems number of elements that should be run through the func
+ **/
 void _execute(std::function<bool (long, long)> func, long start, int num_workers, long num_elems){
   using namespace std;
   vector<future<bool>> futures;
@@ -42,11 +51,19 @@ void _execute(std::function<bool (long, long)> func, long start, int num_workers
 
 
 // does not scale well enough to be used for benchmarking
+/**
+ * @brief Polates x in respect to some given values
+ * @param x_values all other x values
+ * @param y_values all other y values
+ * @param N size of the arrays involved
+ * @param x value to be interpolated
+ * @param Q helper matrix which will hold resulting y
+ **/
 template <typename T>
-void c11_polation(T *x_values, T *y_values, long N, T x, T **Q){
+void polation(T *x_values, T *y_values, long N, T x, T **Q){
   /*==================================================================*/
   // Algorithm from Numerical Analysis
-  // By Richard L. Burden, J. Douglas Faires
+  // By Richard L. Burden, J. Douglas Faires, Annette M. Burden
   /*==================================================================*/
   auto code = [Q, y_values, N](long start_task, long end_task)->bool{
     for(long i=start_task; i<end_task; i++){
@@ -69,5 +86,7 @@ void c11_polation(T *x_values, T *y_values, long N, T x, T **Q){
         Q[i][j] = dividend/divisor; 
     }
   }
+}
+
 }
 #endif 

@@ -38,6 +38,10 @@ struct Container<T> _init_Container(T val, long k, long l){
 // Execute-Functions
 /**
  * @brief Executes the given function in parallel.
+ * @param func function to be done in parallel
+ * @param start index of first element that should be run through the func
+ * @param num_workers how high the parallelism should be
+ * @param num_elems number of elements that should be run through the func
  **/
 void _execute(std::function<void (long, long)> func, long start, int num_workers, long num_elems){
   using namespace std;
@@ -81,6 +85,9 @@ void _execute(std::function<void (long, long)> func, long start, int num_workers
  * 
  * Helper function to avoid the need to calculate the amount of elements
  * everytime.
+ * @param func function to be run in parallel
+ * @param start index of the first element that should be run through the func
+ * @param end index of the last element that should be run through the func
  **/
 void _execute_Start_End(std::function<void (long, long)> func, long start, long end){
   long N = end-start;
@@ -260,7 +267,7 @@ void rotate(T **A, T *d, T **V, long k, long l, long N){
  * @param V place to save the eigenvectors
  * @param max_iterations the maximal iterations the algorithm should run
  * @param epsilon how close the off-diagonal elements should be to 0
- * @return number of iterations until values were clos enough
+ * @return number of iterations until values were close enough
  **/
 template <typename T>
 long jacobi_eigen(T **A, long N, T *d, T **V, long max_iterations, T epsilon){

@@ -71,7 +71,7 @@ int main(int argc, char* argv[]){
   x_values = new VALUE[N];
   y_values = new VALUE[N];
   
-  VALUE y;
+  
 
   for(long i=0; i<iterations; i++){
     
@@ -81,9 +81,11 @@ int main(int argc, char* argv[]){
     // Execution
     exec_times[i] = polate(x_values, y_values, N, x, Q);
 
-    y = Q[N-1][N-1];
+   
     
 #ifdef DEBUG
+    VALUE y; 
+    y = Q[N-1][N-1];
     VALUE y_test = apply_poly(x, polynomial, degree);
     
     // get max for relative & absolute tolerance test

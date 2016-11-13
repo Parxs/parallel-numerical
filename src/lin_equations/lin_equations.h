@@ -27,6 +27,11 @@ template <typename T>
 bool check_Solution(T **A, T *B, T *x, T epsilon, long N);
 
 
+/** 
+ * @brief Initialize the equations with values where the solutions are known.
+ * @param A array that should hold the lhs of the equation
+ * @param b array that should hold the rhs of the equation
+ **/
 template <typename T>
 void init_Example(T **A, T *b){
   A[0][0] = 4;

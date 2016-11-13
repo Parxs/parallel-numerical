@@ -8,8 +8,8 @@
 
 
 // as probably not all threads can do work split work even more to avoid one doing much more than the others
-#ifndef FACTOR_WORK
-#define FACTOR_WORK 2
+#ifndef THREAD_CORRECTION
+#define THREAD_CORRECTION 1
 #endif
 
 #define MAX_ARGS 9

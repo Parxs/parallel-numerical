@@ -10,6 +10,15 @@
 #include <algorithm>
 #include <cmath>
 
+namespace cEleven{
+
+/**
+ * @brief Executes the given function in parallel.
+ * @param func function to be done in parallel
+ * @param start index of first element that should be run through the func
+ * @param num_workers how high the parallelism should be
+ * @param num_elems number of elements that should be run through the func
+ **/
 bool _execute(std::function<bool (long, long)> func, long start, int num_workers, long num_elems){
   using namespace std;
   
@@ -46,8 +55,17 @@ bool _execute(std::function<bool (long, long)> func, long start, int num_workers
 }
 
 
+/**
+ * @brief Calculates the solutions of a system of linear equations.
+ * @param A lhs of the system
+ * @param b rhs of the system
+ * @param x place for the solutions
+ * @param eps allowed approximation error
+ * @param max_iterations maximum number of allowed iterations
+ * @param N dimensions
+ **/
 template <typename T>
-void c11_jacobi(T **A, T *b, T* x, T eps, long max_iterations, long N){
+void jacobi(T **A, T *b, T* x, T eps, long max_iterations, long N){
   long k;
   
   T *old_x = x;
@@ -114,5 +132,5 @@ void c11_jacobi(T **A, T *b, T* x, T eps, long max_iterations, long N){
   }
 }
 
-
+}
 #endif

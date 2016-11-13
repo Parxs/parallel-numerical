@@ -9,7 +9,7 @@
 
 using namespace std;
 
-int num_threads = std::thread::hardware_concurrency() * FACTOR_WORK;
+int num_threads = std::thread::hardware_concurrency() - THREAD_CORRECTION;
 
 std::random_device rd;
 std::mt19937 util::mt(rd());
@@ -57,6 +57,7 @@ long double get_rand(long double lower, long double upper){
 
 /**
  * @brief Prints which arguments can be given to the executable.
+ * @param program_Name name of the program 
  **/
 void print_help(char program_Name[]){
   cout << "\n> USAGE:" << program_Name << "<arguments>" << "\n";
@@ -75,6 +76,9 @@ void print_help(char program_Name[]){
 /**
  * @brief Parses the arguments given and returns their values inside
  * an Input_Container
+ * @param argc number of arguments 
+ * @param argv arguments
+ * @return the arguments parsed into an Input_Container
  **/
 Input_Container get_Arguments(int argc, char *argv[]){
   Input_Container cont = Input_Container();
@@ -130,6 +134,7 @@ Input_Container get_Arguments(int argc, char *argv[]){
 
 /**
  * @brief Returns the passed time since a certain point in the past in miliseconds.
+ * @return time since a certain point in the past
  **/
 unsigned long time_ms(){
   unsigned long milliseconds_since_epoch = 
@@ -143,19 +148,16 @@ unsigned long time_ms(){
 /**
  * @brief Returns the numbers of threads that should be used to get the most out of the machine.
  * 
- * I have yet to find more information on the optimal way
- * to split tasks for the C++11 threads.
- * As async more or less uses a threadpool it is assumed that
- * it is better to split the work in smaller chunks and let one of
- * those threads do more tasks than not splitting
- * to get a rough estimate I am using the hardware_concurrency()
- * so that I at least know how many threads there can be at most.
- * The tasks are split even more as it is probably very unlikely that
- * all of the threads can be used at the same time
+ * I have not found information on the optimal way
+ * to split tasks for the C++11 threads. In general, there will always
+ * be processes in the background so just using the provided value
+ * of std::hardware_concurrency is not a good idea. To still allow
+ * some sort of portability THREAD_CORRECTION is subtracted from the
+ * gotten value and this should make it more likely that the threads 
+ * used will always be available to the program.
  * 
- * After a bit of testing it seems like that currently no threadpool
- * is used on linux (creating a lot of threads because of divide&
- * conquer leads to stop)
+ * @param N size of the problem
+ * @return number of threads that can be used
  **/
 int get_num_threads(long N){
   /*

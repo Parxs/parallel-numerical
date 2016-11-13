@@ -10,6 +10,16 @@
 
 using namespace sequential;
 
+/**
+ * @brief Multiplies two 2D matrices.
+ * @param A array holding first matrix
+ * @param B array holding second matrix
+ * @param C array that should hold the result
+ * @param M first dimension of the first matrix
+ * @param N second dimension of the first matrix
+ * @param K second dimension of the second matrix
+ * @return time taken
+ **/
 unsigned long matrix_mult(VALUE** A, VALUE** B, VALUE** C, long M, long N, long K){
   unsigned long start = time_ms();
   
@@ -18,6 +28,16 @@ unsigned long matrix_mult(VALUE** A, VALUE** B, VALUE** C, long M, long N, long 
   return time_ms() - start;
 }
 
+/**
+ * @brief Multiplies two 2D matrices in a optimized way.
+ * @param A array holding first matrix
+ * @param B array holding second matrix
+ * @param C array that should hold the result
+ * @param M first dimension of the first matrix
+ * @param N second dimension of the first matrix
+ * @param K second dimension of the second matrix
+ * @return time taken
+ **/
 unsigned long matrix_mult_optimized(VALUE** A, VALUE** B, VALUE** C, long M, long N, long K){
   unsigned long start = time_ms();
   
@@ -26,6 +46,16 @@ unsigned long matrix_mult_optimized(VALUE** A, VALUE** B, VALUE** C, long M, lon
   return time_ms() - start;
 }
 
+/**
+ * @brief Multiplies two 1D matrices.
+ * @param A array holding first matrix
+ * @param B array holding second matrix
+ * @param C array that should hold the result
+ * @param M first dimension of the first matrix
+ * @param N second dimension of the first matrix
+ * @param K second dimension of the second matrix
+ * @return time taken
+ **/
 unsigned long matrix_mult(VALUE* A, VALUE* B, VALUE* C, long M, long N, long K){
   unsigned long start = time_ms();
   
@@ -34,6 +64,16 @@ unsigned long matrix_mult(VALUE* A, VALUE* B, VALUE* C, long M, long N, long K){
   return time_ms() - start; 
 }
 
+/**
+ * @brief Multiplies two 1D matrices in optimized way.
+ * @param A array holding first matrix
+ * @param B array holding second matrix
+ * @param C array that should hold the result
+ * @param M first dimension of the first matrix
+ * @param N second dimension of the first matrix
+ * @param K second dimension of the second matrix
+ * @return time taken
+ **/
 unsigned long matrix_mult_optimized(VALUE* A, VALUE* B, VALUE* C, long M, long N, long K){
   unsigned long start = time_ms();
   

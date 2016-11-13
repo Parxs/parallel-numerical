@@ -8,8 +8,19 @@
 
 #include <iostream>
 
+namespace sequential{
+
+/**
+ * @brief Calculates the solutions of a system of linear equations.
+ * @param A lhs of the system
+ * @param b rhs of the system
+ * @param x place for the solutions
+ * @param eps allowed approximation error
+ * @param max_iterations maximum number of allowed iterations
+ * @param N dimensions
+ **/
 template <typename T>
-void seq_jacobi(T **A, T *b, T* x, T eps, long max_iterations, long N){
+void jacobi(T **A, T *b, T* x, T eps, long max_iterations, long N){
   long i, j, k;
   
   T *old_x = x;
@@ -64,5 +75,6 @@ void seq_jacobi(T **A, T *b, T* x, T eps, long max_iterations, long N){
   }
 }
 
+}
 
 #endif // SEQ_JACOBI_H

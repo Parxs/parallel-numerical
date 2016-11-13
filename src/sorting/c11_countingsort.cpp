@@ -6,7 +6,7 @@
 #include "util.h"
 #include "array.h"
 #include "sorting.h"
-
+#include "csort/c11_countingsort.h"
 
 using namespace std;
 
@@ -18,7 +18,12 @@ bool WRONG_PREFIX_SUM = false;
 // C++11 parallel variables
 unsigned int num_workers;
 
-
+/**
+ * @brief Executes the given function in parallel.
+ * @param func function to be done in parallel
+ * @param num_workers how high the parallelism should be
+ * @param num_elems number of elements that should be run through the func
+ **/
 void _execute(function<bool (long, long, int)> func, int num_workers, long num_elems){
   vector<future<bool>> futures;
   int t, extra; // extra will at most be as big as num_workers-1
@@ -200,13 +205,15 @@ cout << endl << "> ERROR: element (i:" << i <<") is negative" << endl << endl;
 
 
 /**
- * @brief Sorts a given list with a given length into a new array.
+ * @brief Measures the time sorting a list takes.
  * 
- * 
+ * @param in_list list to be sorted
+ * @param out_list place for the sorted list
+ * @param N dimension
  * @return  time elapsed, if 0 is returned it is also possible that an
  *          element was bigger than the max value or one of
  *          the elements is smaller than 0
- * */
+ **/
 unsigned long sort_List(int* in_list, int* out_list, long N){
 	long *histogram;
   unsigned long start, end;

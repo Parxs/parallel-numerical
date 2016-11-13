@@ -51,8 +51,7 @@ int main(int argc, char* argv[]){
   // Initialization
 	int* list = new int[N];
   int* sorted_list = new int[N];
-  
-  
+
   for(long i=0; i< iterations; i++){
     init(list, N, MIN, MAX);
 

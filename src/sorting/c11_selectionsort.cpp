@@ -31,7 +31,12 @@ struct Container _init_Container(int val, long index){
 // C++11 parallel variables
 unsigned int num_workers;
 
- 
+ /**
+ * @brief Executes the given function in parallel.
+ * @param func function to be done in parallel
+ * @param num_elems number of elements that should be run through the func
+ * @param start index of first element that should be run through the func
+ **/
 long _execute(function<struct Container (long, long)> func, long num_elems, long start){
   if(num_elems<num_workers || num_elems<SEQ_THRESHOLD){
     // if there are more workers than elements then some task would be 

@@ -4,6 +4,7 @@
 
 #include <iostream>
 
+// arbitary number to increase the size of iterations
 #ifndef MAGIC_NUMBER
 #define MAGIC_NUMBER 3
 #endif
@@ -19,6 +20,7 @@ using namespace sequential;
  * @param d array which should hold the eigenvalues
  * @param V array that should hold the eigenvectors
  * @param N dimension of array
+ * @return time taken
  **/
 unsigned long calculate_Eigen(VALUE **A, VALUE *d, VALUE **V, long N){
   unsigned long start, end;

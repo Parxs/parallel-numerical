@@ -23,7 +23,7 @@ long _partition(T* list, long lo, long hi){
       j--;
     }
     
-    // the following can probably be solve in a different way as
+    // the following can probably be solved in a different way as
     // the first condition is always checked in the while loop
     // but those solutions need either a bigger refactoring, are 
     // harder to understand or even slower

@@ -10,21 +10,29 @@ bool WRONG_PREFIX_SUM = false;
 using namespace std;
 
 template <typename T>
-T _prefix_Sum(T* array, long length){
-	T sum = 0, tmp;
-  
-  long i;
-	for (i=0; i<length; i++){
-		tmp = array[i];
-		if(i==0){
-			array[i] = 0;
-		}else{
-			array[i] = sum;
-		}
-		sum += tmp;
-	}
-  
-  return sum;
+void _prefix_Sum(T* array, long length){
+  int i;
+  // reduce
+  for(i=2; i<=length; i<<=1){
+    // i-1 because the list starts at 0 not 1
+    #pragma omp parallel for 
+    for(int j=(i-1); j<length; j+=i){
+      array[j] += array[j - i/2];
+    }
+  }
+  array[length-1] = 0;
+  //downsweep
+  // get i to the last value that was used for the reduction
+  for(i>>=1; i>1; i>>=1){
+    // i-1 because the list starts at 0 not 1
+    #pragma omp parallel for 
+    for(int j=(i-1); j<length; j+=i){
+      
+      T tmp = array[j - i/2];
+      array[j - i/2] = array[j];
+      array[j] += tmp;
+    }
+  }
 }
 
 template <typename T>
@@ -39,7 +47,7 @@ void seq_calculate_Histogram(T* list, long N, long* histogram){
 
 
 template <typename T>
-void _calculate_Histogram(T* list, long N, long* histogram){
+void _calculate_Histogram2(T* list, long N, long* histogram){
   T val;
   long i;
   
@@ -68,6 +76,17 @@ void _calculate_Histogram(T* list, long N, long* histogram){
       }
     }
     delete[] local_histo;
+  }
+}
+
+template <typename T>
+void _calculate_Histogram(T* list, long N, long* histogram){
+  T val;
+  long i;
+  for(i=0; i<N; i++){
+    val = list[i];
+    // offset by one to allow easier implementation of exclude prefix-sum
+    histogram[val]++;
   }
 }
 
@@ -124,13 +143,15 @@ cout << endl << "> ERROR: element (i:" << i <<") is negative" << endl << endl;
 }
 
 /**
- * @brief Sorts a given list with a given length into a new array.
+ * @brief Measures the time sorting a list takes.
  * 
- * 
+ * @param in_list list to be sorted
+ * @param out_list place for the sorted list
+ * @param N dimension
  * @return  time elapsed, if 0 is returned it is also possible that an
  *          element was bigger than the max value or one of
  *          the elements is smaller than 0
- * */
+ **/
 unsigned long sort_List(int* in_list, int* out_list, long N){
 	long* histogram;
   unsigned long start, end;
@@ -140,12 +161,21 @@ unsigned long sort_List(int* in_list, int* out_list, long N){
   }
   
   // initialize with 0
-  histogram = new long[MAX]();
+  // and include offset
+  int size =1;
+  while(size<MAX){
+    size <<=1;
+  }
+  histogram = new long[size]();
   
   start = time_ms();
 	
   _calculate_Histogram(in_list, N, histogram);
   
+  
+  _prefix_Sum(histogram, size);
+  // last element of the prefixsum histogram will not be used!
+  /*
   if(_prefix_Sum(histogram, MAX) != N){
     WRONG_PREFIX_SUM = true;
 #ifdef DEBUG
@@ -153,7 +183,7 @@ cout << endl << "> ERROR: prefixsum has the wrong result - possibly at least one
 #endif
     delete[](histogram);
     return 0lu;
-  }
+  }*/
   
 	_sort(in_list, out_list, N, histogram);
 	

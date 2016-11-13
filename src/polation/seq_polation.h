@@ -4,12 +4,22 @@
 #include <cmath>
 #include <iostream>
 
+namespace sequential{
+
 // does not scale well enough to be used for benchmarking
+/**
+ * @brief Polates x in respect to some given values
+ * @param x_values all other x values
+ * @param y_values all other y values
+ * @param N size of the arrays involved
+ * @param x value to be interpolated
+ * @param Q helper matrix which will hold resulting y
+ **/
 template <typename T>
-void seq_polation(T *x_values, T *y_values, long N, T x, T **Q){
+void polation(T *x_values, T *y_values, long N, T x, T **Q){
   /*==================================================================*/
   // Algorithm from Numerical Analysis
-  // By Richard L. Burden, J. Douglas Faires
+  // By Richard L. Burden, J. Douglas Faires, Annette M. Burden
   /*==================================================================*/
   for(long i=0; i<N; i++){
     T tmp = y_values[i];
@@ -28,5 +38,6 @@ void seq_polation(T *x_values, T *y_values, long N, T x, T **Q){
         Q[i][j] = dividend/divisor; 
     }
   }
+}
 }
 #endif 

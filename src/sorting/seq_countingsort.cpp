@@ -12,16 +12,13 @@ using namespace std;
 
 template <typename T>
 T _prefix_Sum(T* array,  long length){
-	T sum = 0, tmp;
+	T sum = array[0], tmp;
   
   long i;
-	for (i=0; i<length; i++){
+  array[0] = 0;
+	for (i=1; i<length; i++){
 		tmp = array[i];
-		if(i==0){
-			array[i] = 0;
-		}else{
-			array[i] = sum;
-		}
+    array[i] = sum;
 		sum += tmp;
 	}
   
@@ -85,13 +82,15 @@ cout << endl << "> ERROR: element (i:" << i <<") is negative" << endl << endl;
 }
 
 /**
- * @brief Sorts a given list with a given length into a new array.
+ * @brief Measures the time sorting a list takes.
  * 
- * 
+ * @param in_list list to be sorted
+ * @param out_list place for the sorted list
+ * @param N dimension
  * @return  time elapsed, if 0 is returned it is also possible that an
  *          element was bigger than the max value or one of
  *          the elements is smaller than 0
- * */
+ **/
 unsigned long sort_List(int* in_list, int* out_list, long N){
 	long* histogram;
   unsigned long start, end;

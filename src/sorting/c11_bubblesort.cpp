@@ -12,6 +12,13 @@ using namespace std;
 // C++11 parallel variables
 unsigned int num_workers;
 
+/**
+ * @brief Executes the given function in parallel.
+ * @param func function to be done in parallel
+ * @param num_workers how high the parallelism should be
+ * @param num_elems number of elements that should be run through the func
+ * @param start index of first element that should be run through the func
+ **/
 bool _execute(std::function<bool (long, long, bool)> func, int num_workers, long num_elems, long start){
   vector<future<bool>> futures;
   int t, extra; // extra will at most be as big as num_workers-1

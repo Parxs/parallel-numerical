@@ -3,6 +3,12 @@
 
 #include <iostream>
 
+/**
+ * @brief Initializes the values such that a quadratic function is approximated.
+ * @param x_values where the values for x should be saved
+ * @param y_values where the values for y should be saved
+ * @param N size of arrays
+ **/
 template <typename T>
 void init_Quadratic(T *x_values, T *y_values, long N){
   long i;
@@ -12,6 +18,13 @@ void init_Quadratic(T *x_values, T *y_values, long N){
   }
 }
 
+/**
+ * @brief Runs x through a given polynomial
+ * @param x the value which should be run through
+ * @param polynomial list holding the exponents
+ * @param degree the polynomial should have
+ * @return result
+ **/
 template <typename T>
 T apply_poly(T x, T *polynomial, long degree){
   long i;
@@ -27,6 +40,14 @@ T apply_poly(T x, T *polynomial, long degree){
   return y;
 }
 
+/**
+ * @brief Initializes the values such that a polynomial function is approximated.
+ * @param x_values where the values for x should be saved
+ * @param y_values where the values for y should be saved
+ * @param N size of the arrays
+ * @param polynomial list holding the exponents
+ * @param degree the polynomial should have
+ **/
 template <typename T>
 void init_Polynomial(T *x_values, T *y_values, long N, T *polynomial, long degree){
   long i;

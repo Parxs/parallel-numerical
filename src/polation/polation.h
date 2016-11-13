@@ -19,8 +19,6 @@
 
 #include "polation.hxx"
 
-
-unsigned long polate(VALUE *x_values, VALUE *y_values, long N, VALUE x, VALUE *y, VALUE *dy);
 unsigned long polate(VALUE *x_values, VALUE *y_values, long N, VALUE x, VALUE **Q);
 
 template <typename T>
