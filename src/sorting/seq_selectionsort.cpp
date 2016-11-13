@@ -1,33 +1,18 @@
 #include "util.h"
 #include "array.h"
 #include "sorting.h"
+#include "ssort/seq_selectionsort.h"
 
-template <typename T>
-void selectionsort(T* list, long N){
-  long i, j, index_min, start;
-  T min, tmp;
-  for(i=0; i<N; i++){
-    min = list[i];
-    index_min = i;
-    start = i+1;
-    for(j=start; j<N; j++){
-      tmp = list[j];
-      if(tmp < min){
-        min = tmp;
-        index_min = j;
-      }
-    }
-    swap(list, i, index_min);
-  }
-}
-
+using namespace sequential;
 
 
 /**
- * @brief Sorts a given list with a given length into a new array.
+ * @brief Measures the time sorting a list takes.
  * 
- * @return  time elapsed, if 0 is returned it is also possible that an
- *          element was bigger than the maximal possible value
+ * @param in_list list to be sorted
+ * @param out_list place for the sorted list
+ * @param N dimension
+ * @return time elapsed
  * */
 unsigned long sort_List(int* in_list, int* out_list, long N){
 	

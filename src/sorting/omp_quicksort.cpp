@@ -1,71 +1,19 @@
 #include "util.h"
 #include "array.h"
 #include "sorting.h"
+#include "qsort/omp_quicksort.h"
+
+using namespace openMP;
 
 
-template <typename T>
-T _pivot(T* list, long lo, long hi){
-  
-  return list[(lo+hi)/2];
-}
-
-template <typename T>
-long _partition(T* list, long lo, long hi){
-  long i=lo, j=hi;
-  T pivot = _pivot(list, lo, hi);
-  
-  while(i<=j && j<=hi){
-    while(i<=hi && list[i]<pivot){
-      i++;
-    } 
-    while(j<=hi && list[j]>pivot){
-      j--;
-    }
-    
-    // the following can probably be solve in a different way as
-    // the first condition is always checked in the while loop
-    // but those solutions need either a bigger refactoring, are 
-    // harder to understand or even slower
-    if(i>j){
-      break;
-    }else if(i<j){
-      swap(list, i, j);
-    } 
-    
-    i++;
-    j--;
-  }
-  
-  return i;
-}
-
-template <typename T>
-void quicksort(T* list, long lo, long hi){
-  long index = _partition(list, lo, hi);
-  
-#pragma omp parallel sections
-{
-  #pragma omp section
-  {
-    if(lo < index-1){
-      quicksort(list, lo, index-1);
-    }
-  }
-  #pragma omp section
-  {
-    if(index < hi){
-      quicksort(list, index, hi);
-    }
-  }
-} 
-}
-
-template <typename T>
-void quicksort(T* list, long N){
-  quicksort(list, 0, N-1);
-}
-
-
+/**
+ * @brief Measures the time sorting a list takes.
+ * 
+ * @param in_list list to be sorted
+ * @param out_list place for the sorted list
+ * @param N dimension
+ * @return time elapsed
+ * */
 unsigned long sort_List(int* in_list, int* out_list, long N){
 	// copy to target
 	copy(in_list, out_list, N);

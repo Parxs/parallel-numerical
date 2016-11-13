@@ -5,7 +5,7 @@
 #define MIN 0
 #endif
 #ifndef MAX
-#define MAX 7
+#define MAX 1024
 #endif
 
 

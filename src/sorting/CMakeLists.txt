@@ -10,7 +10,7 @@ endif()
 
 
 # Compiler Options
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -Wall -Werror -g -Wl,--no-as-needed -DDEBUG")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11 -pthread -Wall -Werror -o3 -Wl,--no-as-needed")
 
 find_package(Threads)
 
